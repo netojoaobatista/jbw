@@ -29,7 +29,7 @@ public class Using {
 				final Offer current = iterator.next();
 				final Seller seller = current.getSeller();
 
-				System.out.printf( "%s - %s\n" , seller.getName() , seller.getExtra() );
+				System.out.printf( "%s - %s -> %s\n" , seller.getName() , seller.getExtra() , seller.getEBitRating().getRating() );
 				System.out.printf( "\t[R$ %7.02f] - %s - %s\n" , current.getPrice().getValue() , current.getName() , current.getThumbnail().getURL() );
 			}
 		} catch ( final Throwable e ) {
