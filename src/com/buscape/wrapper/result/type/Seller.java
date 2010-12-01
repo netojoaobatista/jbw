@@ -22,6 +22,8 @@ public class Seller {
 	 */
 	private UserAverageRating userAverageRating;
 
+	private EBitRating eBitRating;
+
 	public Seller() {
 		contactMap = new HashMap<String , String>();
 		linkList = new ArrayList<Link>();
@@ -49,16 +51,20 @@ public class Seller {
 		return contactMap.entrySet().iterator();
 	}
 
+	public final EBitRating getEBitRating(){
+		return eBitRating;
+	}
+
 	public final String getExtra() {
 		return extra;
 	}
 
-	public final int getSellerId() {
-		return sellerId;
-	}
-
 	public final String getName() {
 		return sellerName;
+	}
+
+	public final int getSellerId() {
+		return sellerId;
 	}
 
 	public final Thumbnail getThumbnail() {
@@ -79,6 +85,10 @@ public class Seller {
 
 	public final void setDigitalPayment( boolean digitalPayment ){
 		this.digitalPayment = digitalPayment;
+	}
+
+	public final void setEBitRating( EBitRating eBitRating ){
+		this.eBitRating = eBitRating;
 	}
 
 	public final void setExtra( String extra ) {

@@ -7,12 +7,13 @@ import java.util.List;
 public class Offer {
 	private int offerId;
 	private int categoryId;
-	private int productId;
-	private String offerName;
 	private final List<Link> linkList;
-	private Thumbnail thumbnail;
+	private boolean lomadeelink;
+	private String offerName;
 	private Price price;
+	private int productId;
 	private Seller seller;
+	private Thumbnail thumbnail;
 
 	public Offer() {
 		linkList = new ArrayList<Link>();
@@ -40,12 +41,12 @@ public class Offer {
 		return linkList.iterator();
 	}
 
-	public final int getOfferId() {
-		return offerId;
-	}
-
 	public final String getName() {
 		return offerName;
+	}
+
+	public final int getOfferId() {
+		return offerId;
 	}
 
 	public final Price getPrice() {
@@ -64,8 +65,16 @@ public class Offer {
 		return thumbnail;
 	}
 
+	public final boolean hasLomadeeLink(){
+		return lomadeelink;
+	}
+
 	public final void setCategoryId( int categoryId ) {
 		this.categoryId = categoryId;
+	}
+
+	public final void setHasLomadeeLink( boolean haslomadeelink ){
+		lomadeelink = haslomadeelink;
 	}
 
 	public final void setOfferId( int offerId ) {

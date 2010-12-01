@@ -4,6 +4,7 @@ import com.buscape.wrapper.request.Filter;
 import com.buscape.wrapper.request.Sort;
 import com.buscape.wrapper.result.Result;
 import com.buscape.wrapper.result.type.Offer;
+import com.buscape.wrapper.result.type.Seller;
 import com.buscape.wrapper.shared.Medal;
 
 public class Using {
@@ -26,8 +27,10 @@ public class Using {
 
 			while ( iterator.hasNext() ) {
 				final Offer current = iterator.next();
+				final Seller seller = current.getSeller();
 
-				System.out.printf( "[R$ %7.02f] - %s - %s\n" , current.getPrice().getValue() , current.getName() , current.getThumbnail().getURL() );
+				System.out.printf( "%s - %s\n" , seller.getName() , seller.getExtra() );
+				System.out.printf( "\t[R$ %7.02f] - %s - %s\n" , current.getPrice().getValue() , current.getName() , current.getThumbnail().getURL() );
 			}
 		} catch ( final Throwable e ) {
 			e.printStackTrace();

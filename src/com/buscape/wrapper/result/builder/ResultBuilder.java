@@ -10,6 +10,7 @@ import com.buscape.wrapper.result.adapter.ArrayAdapter;
 import com.buscape.wrapper.result.adapter.ObjectAdapter;
 import com.buscape.wrapper.result.type.Category;
 import com.buscape.wrapper.result.type.Details;
+import com.buscape.wrapper.result.type.EBitRating;
 import com.buscape.wrapper.result.type.Item;
 import com.buscape.wrapper.result.type.Link;
 import com.buscape.wrapper.result.type.Offer;
@@ -64,6 +65,15 @@ public class ResultBuilder {
 		result.setDetails( details );
 
 		return details;
+	}
+
+	public EBitRating buildEBitRating( ObjectAdapter adapter ) throws Throwable {
+		final EBitRating eBitRating = new EBitRating();
+
+		eBitRating.setNumComments( adapter.getInt( "numcomments" ) );
+		eBitRating.setRating( adapter.getString( "rating" ) );
+
+		return eBitRating;
 	}
 
 	public Item buildItem( ObjectAdapter adapter ) throws Throwable {
@@ -129,11 +139,14 @@ public class ResultBuilder {
 	public Seller buildSeller( ObjectAdapter adapter ) throws Throwable {
 		int i,t;
 		final Seller seller = new Seller( adapter.getInt( "id" ) , adapter.getString( "sellername" ) );
-		seller.setThumbnail( buildThumbnail( adapter.getObject( "thumbnail" ) ) );
-		seller.setExtra( adapter.getString( "extra" ) );
-		seller.setUserAverageRating( buildUserAverageRating( adapter.getObject( "rating" ).getObject( "useraveragerating" ) ) );
-		seller.setTrustedStore( adapter.getBoolean( "istrustedstore" ) );
+		final ObjectAdapter rating = adapter.getObject( "rating" );
+
 		seller.setDigitalPayment( adapter.getBoolean( "pagamentodigital" ) );
+		seller.setEBitRating( buildEBitRating( rating.getObject( "ebitrating" ) ) );
+		seller.setExtra( adapter.getString( "extra" ) );
+		seller.setThumbnail( buildThumbnail( adapter.getObject( "thumbnail" ) ) );
+		seller.setTrustedStore( adapter.getBoolean( "istrustedstore" ) );
+		seller.setUserAverageRating( buildUserAverageRating( rating.getObject( "useraveragerating" ) ) );
 
 		final ArrayAdapter linkArray = adapter.getArray( "links" );
 
@@ -202,12 +215,15 @@ public class ResultBuilder {
 
 	public UserAverageRating buildUserAverageRating( ObjectAdapter adapter ) throws Throwable {
 		final UserAverageRating userAverageRating = new UserAverageRating();
-		final ArrayAdapter linkArray = adapter.getArray( "links" );
 
-		for ( int i = 0, t = linkArray.length() ; i < t ; ++i ) {
-			final Link link = buildLink( linkArray.getObject( i ).getObject( "link" ) );
+		if ( adapter.has( "links" ) ) {
+			final ArrayAdapter linkArray = adapter.getArray( "links" );
 
-			userAverageRating.addLink( link );
+			for ( int i = 0, t = linkArray.length() ; i < t ; ++i ) {
+				final Link link = buildLink( linkArray.getObject( i ).getObject( "link" ) );
+
+				userAverageRating.addLink( link );
+			}
 		}
 
 		userAverageRating.setNumComments( adapter.getInt( "numcomments" ) );
@@ -245,9 +261,12 @@ public class ResultBuilder {
 
 	private Offer realBuildOffer( ObjectAdapter adapter ) throws Throwable {
 		final Offer offer = new Offer( adapter.getInt( "id" ) , adapter.getString( "offername" ) );
+
 		offer.setCategoryId( adapter.getInt( "categoryid" ) );
+		offer.setHasLomadeeLink( adapter.getBoolean( "haslomadeelink" ) );
 		offer.setPrice( buildPrice( adapter.getObject( "price" ) ) );
 		offer.setProductId( adapter.getInt( "productid" ) );
+		offer.setSeller( buildSeller( adapter.getObject( "seller" ) ) );
 		offer.setThumbnail( buildThumbnail( adapter.getObject( "thumbnail" ) ) );
 
 		return offer;
