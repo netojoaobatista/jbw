@@ -90,9 +90,21 @@ public class Buscape {
 		this.code = code;
 	}
 
+	/**
+	 * O serviço de procura de categorias permite que sejam exibidas informações
+	 * relativas às categorias. É possível obter categorias, produtos ou ofertas
+	 * informando apenas um ID de categoria.
+	 * 
+	 * @param categoryId
+	 *            O ID da categoria que será buscado
+	 * @return Resultado da consulta
+	 * @throws BuscapeException
+	 */
 	public Result findCategoryList( int categoryId ) throws BuscapeException {
 		return findCategoryList( categoryId , ResultFormat.JSON );
-	}	/*/**
+	}
+
+	/**
 	 * O serviço de procura de categorias permite que sejam exibidas informações
 	 * relativas às categorias. É possível obter categorias, produtos ou ofertas
 	 * informando apenas um ID de categoria.
@@ -106,7 +118,9 @@ public class Buscape {
 	 */
 	public Result findCategoryList( int categoryId , ResultFormat format ) throws BuscapeException {
 		return realFindCategoryList( URL + "/findCategoryList/" + applicationID + "/" + code + "/?categoryId=" + categoryId + "&format=" + format + filter , format );
-	}	/*/**
+	}
+
+	/**
 	 * O serviço de procura de categorias permite que sejam exibidas informações
 	 * relativas às categorias. É possível obter categorias, produtos ou ofertas
 	 * informando apenas um ID de categoria.
@@ -118,7 +132,9 @@ public class Buscape {
 	 */
 	public Result findCategoryList( String keyword ) throws BuscapeException {
 		return findCategoryList( keyword , ResultFormat.JSON );
-	}	/*/**
+	}
+
+	/**
 	 * O serviço de procura de categorias permite que sejam exibidas informações
 	 * relativas às categorias. É possível obter categorias, produtos ou ofertas
 	 * informando apenas um ID de categoria.
@@ -132,7 +148,9 @@ public class Buscape {
 	 */
 	public Result findCategoryList( String keyword , ResultFormat format ) throws BuscapeException {
 		return realFindCategoryList( URL + "/findCategoryList/" + applicationID + "/" + code + "/?keyword=" + keyword + "&format=" + format + filter , format );
-	}	/*/**
+	}
+
+	/**
 	 * Busque todas as ofertas de um determinado produto, filtrando-os por
 	 * avaliação da loja, preço ou popularidade
 	 * 
@@ -143,7 +161,9 @@ public class Buscape {
 	 */
 	public Result findOfferList( int productId ) throws BuscapeException {
 		return findOfferList( productId , ResultFormat.JSON );
-	}	/*/**
+	}
+
+	/**
 	 * Busque todas as ofertas de um determinado produto, filtrando-os por
 	 * avaliação da loja, preço ou popularidade
 	 * 
@@ -156,7 +176,9 @@ public class Buscape {
 	 */
 	public Result findOfferList( int productId , ResultFormat format ) throws BuscapeException {
 		return realFindOfferList( URL + "/findOfferList/" + applicationID + "/" + code + "/?productId=" + productId + "&format=" + format + filter , format );
-	}	/*/**
+	}
+
+	/**
 	 * Busque todas as ofertas de um determinado produto, filtrando-os por
 	 * avaliação da loja, preço ou popularidade
 	 * 
@@ -170,7 +192,9 @@ public class Buscape {
 	 */
 	public Result findOfferList( int productId , String keyword ) throws BuscapeException {
 		return findOfferList( productId , keyword , ResultFormat.JSON );
-	}	/*/**
+	}
+
+	/**
 	 * Busque todas as ofertas de um determinado produto, filtrando-os por
 	 * avaliação da loja, preço ou popularidade
 	 * 
@@ -186,7 +210,9 @@ public class Buscape {
 	 */
 	public Result findOfferList( int productId , String keyword , ResultFormat format ) throws BuscapeException {
 		return realFindOfferList( URL + "/findOfferList/" + applicationID + "/" + code + "/?productId=" + productId + "&keyword=" + keyword + "&format=" + format + filter , format );
-	}	/*/**
+	}
+
+	/**
 	 * Busque todas as ofertas de um determinado produto, filtrando-os por
 	 * avaliação da loja, preço ou popularidade
 	 * 
@@ -198,7 +224,9 @@ public class Buscape {
 	 */
 	public Result findOfferList( String keyword ) throws BuscapeException {
 		return findOfferList( keyword , ResultFormat.JSON );
-	}	/*/**
+	}
+
+	/**
 	 * Busque todas as ofertas de um determinado produto, filtrando-os por
 	 * avaliação da loja, preço ou popularidade
 	 * 
@@ -212,7 +240,9 @@ public class Buscape {
 	 */
 	public Result findOfferList( String keyword , ResultFormat format ) throws BuscapeException {
 		return realFindOfferList( URL + "/findOfferList/" + applicationID + "/" + code + "/?keyword=" + keyword + "&format=" + format + filter , format );
-	}	/*/**
+	}
+
+	/**
 	 * Recupera uma lista de produtos utilizando o id da categoria
 	 * 
 	 * @param categoryId
@@ -222,7 +252,9 @@ public class Buscape {
 	 */
 	public Result findProductList( int categoryId ) throws BuscapeException {
 		return findProductList( categoryId , ResultFormat.JSON );
-	}	/*/**
+	}
+
+	/**
 	 * Recupera uma lista de produtos utilizando o id da categoria
 	 * 
 	 * @param categoryId
@@ -234,7 +266,9 @@ public class Buscape {
 	 */
 	public Result findProductList( int categoryId , ResultFormat format ) throws BuscapeException {
 		return realFindProductList( URL + "/findProductList/" + applicationID + "/" + code + "/?categoryId=" + categoryId + "&format=" + format + filter , format );
-	}	/*/**
+	}
+
+	/**
 	 * Recupera uma lista de produtos utilizando o id da categoria e palavra
 	 * chave
 	 * 
@@ -248,7 +282,9 @@ public class Buscape {
 	 */
 	public Result findProductList( int categoryId , String keyword ) throws BuscapeException {
 		return findProductList( categoryId , keyword , ResultFormat.JSON );
-	}	/*/**
+	}
+
+	/**
 	 * Recupera uma lista de produtos utilizando o id da categoria e palavra
 	 * chave
 	 * 
@@ -264,7 +300,9 @@ public class Buscape {
 	 */
 	public Result findProductList( int categoryId , String keyword , ResultFormat format ) throws BuscapeException {
 		return realFindProductList( URL + "/findProductList/" + applicationID + "/" + code + "/?categoryId=" + categoryId + "&keyword=" + keyword + "&format=" + format + filter , format );
-	}	/*/**
+	}
+
+	/**
 	 * Recupera uma lista de produtos por palavra chave
 	 * 
 	 * @param keyword
@@ -274,7 +312,9 @@ public class Buscape {
 	 */
 	public Result findProductList( String keyword ) throws BuscapeException {
 		return findProductList( keyword , ResultFormat.JSON );
-	}	/*/**
+	}
+
+	/**
 	 * Recupera uma lista de produtos por palavra chave
 	 * 
 	 * @param keyword
@@ -286,7 +326,9 @@ public class Buscape {
 	 */
 	public Result findProductList( String keyword , ResultFormat format ) throws BuscapeException {
 		return realFindProductList( URL + "/findProductList/" + applicationID + "/" + code + "/?keyword=" + keyword + "&format=" + format + filter , format );
-	}	/*/**
+	}
+
+	/**
 	 * Faz a consulta pelos serviços da API do BuscaPé
 	 * 
 	 * @param url
@@ -315,7 +357,9 @@ public class Buscape {
 		} catch ( final Throwable e ) {
 			throw new BuscapeException( e );
 		}
-	}	/*/**
+	}
+
+	/**
 	 * Efetivamente faz a busca por categorias
 	 * 
 	 * @param url
@@ -347,7 +391,9 @@ public class Buscape {
 		} catch ( final Throwable e ) {
 			throw new BuscapeException( e );
 		}
-	}	/*/**
+	}
+
+	/**
 	 * Efetivamente faz a busca por ofertas
 	 * 
 	 * @param url
@@ -378,6 +424,7 @@ public class Buscape {
 			throw new BuscapeException( e );
 		}
 	}
+
 	/**
 	 * Efetivamente faz a busca de produtos
 	 * 
@@ -406,22 +453,14 @@ public class Buscape {
 		}
 	}
 
-	/*/**
+	/**
 	 * Define os filtros da requisição
+	 * 
 	 * @param filter
 	 */
 	public void setFilter( Filter filter ){
 		this.filter = filter;
-	}	/*/**
-	 * O serviço de procura de categorias permite que sejam exibidas informações
-	 * relativas às categorias. É possível obter categorias, produtos ou ofertas
-	 * informando apenas um ID de categoria.
-	 * 
-	 * @param categoryId
-	 *            O ID da categoria que será buscado
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
-	 */
+	}
 
 	/**
 	 * Este serviço retorna os produtos mais populares do BuscaPé
