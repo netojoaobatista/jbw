@@ -1,6 +1,5 @@
-package com.buscape.wrapper.shared;
+package com.buscape.wrapper.util;
 
-import com.buscape.wrapper.util.Messages;
 
 /**
  * Identificador de medalhas eBit
