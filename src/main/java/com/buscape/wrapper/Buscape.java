@@ -7,7 +7,7 @@ import com.buscape.wrapper.request.Filter;
 import com.buscape.wrapper.request.Service;
 import com.buscape.wrapper.request.util.URLBuilder;
 import com.buscape.wrapper.result.ResultFormat;
-import com.buscape.wrapper.result.builder.AbstractResultBuilder;
+import com.buscape.wrapper.result.parser.AbstractResultParser;
 import com.buscape.wrapper.result.type.Result;
 
 /**
@@ -21,11 +21,11 @@ public class Buscape {
 
 	private final BuscapeFactory factory;
 
-	private Country countryCode;
+	private final Country countryCode;
 
-	private Filter filter;
+	private final Filter filter;
 	
-	private ResultFormat format;
+	private final ResultFormat format;
 
 	/**
 	 * Constructs a wrapper object to Buscapé API, with <code>BRAZIL</code> as
@@ -33,7 +33,7 @@ public class Buscape {
 	 * 
 	 * @param applicationId
 	 *            identification of application which will use the API.
-	 * @param countryCode
+	 * @param filter
 	 *            default filter for all requests made in API.
 	 */
 	public Buscape(String applicationId, Filter filter) {
@@ -46,8 +46,10 @@ public class Buscape {
 	 * 
 	 * @param applicationId
 	 *            identification of application which will use the API.
-	 * @param countryCode
+	 * @param filter
 	 *            default filter for all requests made in API.
+	 * @param format 
+	 * 			  default result format of requests.
 	 */
 	public Buscape(String applicationId, Filter filter, ResultFormat format) {
 		this(applicationId, filter, Country.BRAZIL, format);
@@ -274,14 +276,14 @@ public class Buscape {
 	private Result callGenericService(Service service, Filter f) throws BuscapeException {
 		String url = new URLBuilder().service(service).applicationId(applicationId).countryCode(countryCode).filter(f).build();
 		String data = callService(url);
-		AbstractResultBuilder builder = getResultBuilder(data);
+		AbstractResultParser builder = getResultBuilder(data);
 
 		return builder.getResult();
 	}
 
 	private String callService(String url) throws BuscapeException {
 		try {
-			final HttpRequester request = factory.createRequester(url);
+			final HttpRequester request = new HttpRequester(url);
 			
 			return request.getResponse();
 		} catch (Exception e) {
@@ -289,7 +291,7 @@ public class Buscape {
 		}
 	}
 	
-	private AbstractResultBuilder getResultBuilder(String data) {
-		return factory.createBuilder(data, format);
+	private AbstractResultParser getResultBuilder(String data) {
+		return factory.createParser(data, format);
 	}
 }

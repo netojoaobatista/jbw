@@ -3,7 +3,7 @@ package com.buscape.wrapper.request;
 import com.buscape.wrapper.util.Messages;
 
 /**
- * Código do país que será utilizado na requisição
+ * Countries codes used on url composition to API calls. 
  * 
  * @author neto
  */
@@ -14,7 +14,7 @@ public enum Country {
 	ARGENTINA(Messages.getString("Country.argentina")), //$NON-NLS-1$
 
 	/**
-	 * Brasil
+	 * Brazil
 	 */
 	BRAZIL(Messages.getString("Country.brasil")), //$NON-NLS-1$
 
@@ -24,12 +24,12 @@ public enum Country {
 	CHILE(Messages.getString("Country.chile")), //$NON-NLS-1$
 
 	/**
-	 * Colômbia
+	 * Colombia
 	 */
 	COLOMBIA(Messages.getString("Country.colombia")), //$NON-NLS-1$
 
 	/**
-	 * México
+	 * Mexico
 	 */
 	MEXICO(Messages.getString("Country.mexico")), //$NON-NLS-1$
 
@@ -43,24 +43,18 @@ public enum Country {
 	 */
 	VENEZUELA(Messages.getString("Country.venezuela")); //$NON-NLS-1$
 
-	/**
-	 * Código do país
-	 */
+
 	private String code;
 
-	Country( String code ){
+	private Country( String code ){
 		this.code = code;
 	}
 
 	/**
-	 * @return O código do país
+	 * The code, to be used on url composition, of current country.
+	 * @return a string with the value of code.
 	 */
 	public String code(){
-		return code;
-	}
-
-	@Override
-	public String toString(){
 		return code;
 	}
 }

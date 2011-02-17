@@ -3,29 +3,24 @@ package com.buscape.wrapper.result;
 import com.buscape.wrapper.util.Messages;
 
 /**
- * Formato da resposta de uma consulta
+ * Format of API call response.
  * 
  * @author neto
  */
 public enum ResultFormat {
 	/**
-	 * JavaScript Object Notation é o padrão para as requisições
+	 * JSON format
 	 */
 	JSON( Messages.getString("ResultFormat.json") ), //$NON-NLS-1$
 
 	/**
-	 * O formato XML
+	 * XML format
 	 */
 	XML( Messages.getString("ResultFormat.xml") ); //$NON-NLS-1$
 
-	/**
-	 * Formato da resposta de uma consulta
-	 */
+
 	private String format;
 
-	/**
-	 * @param format
-	 */
 	private ResultFormat( String format ) {
 		this.format = format;
 	}

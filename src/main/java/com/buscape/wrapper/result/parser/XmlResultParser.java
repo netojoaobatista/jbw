@@ -1,4 +1,4 @@
-package com.buscape.wrapper.result.builder;
+package com.buscape.wrapper.result.parser;
 
 import java.io.ByteArrayInputStream;
 
@@ -8,12 +8,23 @@ import javax.xml.bind.Unmarshaller;
 
 import com.buscape.wrapper.result.type.Result;
 
-public class XmlResultBuilder extends AbstractResultBuilder {
+/**
+ * Implementation of AbstractResultParser that parses data in XML format to Result.
+ * @author cartagena
+ */
+public class XmlResultParser extends AbstractResultParser {
 	
-	private final String data;
-
-	public XmlResultBuilder(String rawdata) {
-		this.data = rawdata;
+	private XmlResultParser(String data) {
+		super(data);
+	}
+	
+	/**
+	 * Creates an instance of {@link XmlResultParser} with provided data.
+	 * @param data the raw data, in XML, that will be parsed.
+	 * @return a new instance of {@link XmlResultParser},
+	 */
+	public static AbstractResultParser createInstance(String data) {
+		return new XmlResultParser(data);
 	}
 	
 	@Override
@@ -32,5 +43,6 @@ public class XmlResultBuilder extends AbstractResultBuilder {
 
 		return null;
 	}
+
 
 }

@@ -5,7 +5,7 @@ import java.util.Map.Entry;
 
 import com.buscape.wrapper.request.Country;
 import com.buscape.wrapper.request.Filter;
-import com.buscape.wrapper.request.Medal;
+import com.buscape.wrapper.request.EBitMedal;
 import com.buscape.wrapper.request.Service;
 import com.buscape.wrapper.request.Sort;
 import com.buscape.wrapper.result.ResultFormat;
@@ -186,11 +186,11 @@ public class URLBuilder {
 	}
 	
 	public URLBuilder medalFilter(String medal) {
-		filter.setMedal(Medal.valueOf(medal));
+		filter.setMedal(EBitMedal.valueOf(medal));
 		return this;
 	}	
 	
-	public URLBuilder medalFilter(Medal medal) {
+	public URLBuilder medalFilter(EBitMedal medal) {
 		filter.setMedal(medal);
 		return this;
 	}	

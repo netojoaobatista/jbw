@@ -1,4 +1,4 @@
-package com.buscape.wrapper.result.builder;
+package com.buscape.wrapper.result.parser;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -38,37 +38,57 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
-public class JsonResultBuilder extends AbstractResultBuilder {
+/**
+ * Implementation of AbstractResultParser that parses data in JSON format to Result.
+ * @author cartagena
+ */
+public class JsonResultParser extends AbstractResultParser {
+	
+	private final Gson gson;
 
-	private final String data;
-	private static final Gson gson;
-
-	static {
+	private JsonResultParser(String data) {
+		super(data);
+		
 		Type listOfferType = new TypeToken<List<OfferType>>() {}.getType();
 		Type listCategoryType = new TypeToken<List<CategoryType>>() {}.getType();
 		Type listProductType = new TypeToken<List<ProductType>>() {}.getType();
 		Type listItemType = new TypeToken<List<ItemListType>>() {}.getType();
 
 		gson = new GsonBuilder()
-		.setFieldNamingStrategy(new XmlAttributeNamingStrategy())
-		.registerTypeAdapter(AddressesType.class, new AddressesTypeDeserializer())
-		.registerTypeAdapter(ContactsType.class, new ContactsTypeDeserializer())
-		.registerTypeAdapter(FiltersType.class, new FiltersTypeDeserializer())
-		.registerTypeAdapter(LinksType.class, new LinksTypeDeserializer())
-		
-		.registerTypeAdapter(listCategoryType, new CategoryTypeListDeserializer())
-		.registerTypeAdapter(listItemType, new ItemListTypeListDeserializer())
-		.registerTypeAdapter(listOfferType, new OfferTypeListDeserializer())
-		.registerTypeAdapter(listProductType, new ProductTypeListDeserializer())
-		
-		.registerTypeAdapter(XMLGregorianCalendar.class, new XMLGregorianCalendarInstanceCreator())
-		.create();
+			.setFieldNamingStrategy(new XmlAttributeNamingStrategy())
+			.registerTypeAdapter(AddressesType.class, new AddressesTypeDeserializer())
+			.registerTypeAdapter(ContactsType.class, new ContactsTypeDeserializer())
+			.registerTypeAdapter(FiltersType.class, new FiltersTypeDeserializer())
+			.registerTypeAdapter(LinksType.class, new LinksTypeDeserializer())
+			
+			.registerTypeAdapter(listCategoryType, new CategoryTypeListDeserializer())
+			.registerTypeAdapter(listItemType, new ItemListTypeListDeserializer())
+			.registerTypeAdapter(listOfferType, new OfferTypeListDeserializer())
+			.registerTypeAdapter(listProductType, new ProductTypeListDeserializer())
+			
+			.registerTypeAdapter(XMLGregorianCalendar.class, new XMLGregorianCalendarInstanceCreator())
+			.create();
 	}
 
-	public JsonResultBuilder(String rawdata) {
-		this.data = rawdata;
+	/**
+	 * Creates an instance of {@link JsonResultParser} with provided data.
+	 * @param data the raw data, in JSON, that will be parsed.
+	 * @return a new instance of {@link JsonResultParser},
+	 */
+	public static AbstractResultParser createInstance(String data) {
+		return new JsonResultParser(data);
 	}
-
+	
+	@Override
+	public Result getResult() {
+		if(result == null) {
+			JsonObject root = new JsonParser().parse(this.data).getAsJsonObject();
+			result = gson.fromJson(root, Result.class);
+		}
+		
+		return result;
+	}
+	
 	private static class XMLGregorianCalendarInstanceCreator implements InstanceCreator<XMLGregorianCalendar> {
 		public XMLGregorianCalendar createInstance(Type type) {
 
@@ -84,16 +104,6 @@ public class JsonResultBuilder extends AbstractResultBuilder {
 		}
 	}
 
-	@Override
-	public Result getResult() {
-		if(result == null) {
-			JsonObject root = new JsonParser().parse(this.data).getAsJsonObject();
-			result = gson.fromJson(root, Result.class);
-		}
-		
-		return result;
-	}
-	
 	private static class AddressesTypeDeserializer implements JsonDeserializer<AddressesType> {
 
 		@Override

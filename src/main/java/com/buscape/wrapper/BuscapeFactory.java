@@ -1,46 +1,35 @@
 package com.buscape.wrapper;
 
-import com.buscape.wrapper.http.HttpRequester;
 import com.buscape.wrapper.result.ResultFormat;
-import com.buscape.wrapper.result.builder.AbstractResultBuilder;
-import com.buscape.wrapper.result.builder.JsonResultBuilder;
-import com.buscape.wrapper.result.builder.XmlResultBuilder;
+import com.buscape.wrapper.result.parser.AbstractResultParser;
+import com.buscape.wrapper.result.parser.JsonResultParser;
+import com.buscape.wrapper.result.parser.XmlResultParser;
 
 /**
- * Fábrica de objetos utilizados pelo wrapper da API do BuscaPé
+ * Factory of objects used by the API wrapper
  * 
  * @author neto
  */
 public class BuscapeFactory {
+	
 	/**
-	 * Cria uma instância do objeto Builder que é utilizado para construção dos
-	 * objetos do retorno
-	 * @param data 
-	 * 
-	 * @return
+	 * Creates an instance of {@link AbstractResultParser} used to parse, 
+	 * from chosen format, results from requests.
+	 * @param data raw data, in chosen format, that will be parsed. 
+	 * @param format the format of data.
+	 * @return an instance equivalent to format chosen.
 	 */
-	public AbstractResultBuilder createBuilder(String data, ResultFormat format){
-		AbstractResultBuilder builder = null;
+	public AbstractResultParser createParser(String data, ResultFormat format){
+		AbstractResultParser builder = null;
 
 		switch ( format ) {
 			case JSON:
-				builder = new JsonResultBuilder(data);
+				builder = JsonResultParser.createInstance(data);
 				break;
 			case XML:
-				builder = new XmlResultBuilder(data);
+				builder = XmlResultParser.createInstance(data);
 		}
 
 		return builder;
-	}
-
-	/**
-	 * Cria uma instância do objeto de requisição HTTP, utilizado para enviar a
-	 * requisição à API do BuscaPé
-	 * @param url 
-	 * 
-	 * @return
-	 */
-	public HttpRequester createRequester(String url) {
-		return new HttpRequester(url);
 	}
 }

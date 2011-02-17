@@ -1,27 +1,41 @@
 package com.buscape.wrapper.request;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.buscape.wrapper.result.ResultFormat;
 
+/**
+ * Represents the filters and parameters that can appear in url used to API calls.
+ * @author cartagena
+ */
 public class Filter implements Cloneable {
 
 	private Integer categoryId;
+	
 	private Integer productId;
+	
 	private Integer sellerId;
+	
 	private String keyword;
+	
 	private String barcode;
+	
 	private ResultFormat format;
+	
 	private Integer results;
+	
 	private Integer page;
+	
 	private Double priceMin;
+	
 	private Double priceMax;
+	
 	private Sort sort;
-	private Medal medal;
+	
+	private EBitMedal medal;
 
 	public Filter() {
 	}
@@ -40,103 +54,182 @@ public class Filter implements Cloneable {
 		sort = base.sort;
 		medal = base.medal;
 	}
-
-	public int getCategoryId() {
+	
+	
+	/**
+	 * @return the categoryId
+	 */
+	public final Integer getCategoryId() {
 		return categoryId;
 	}
 
-	public void setCategoryId(int categoryId) {
+	/**
+	 * @param categoryId the categoryId to set
+	 */
+	public final void setCategoryId(Integer categoryId) {
 		this.categoryId = categoryId;
 	}
 
-	public int getProductId() {
+	/**
+	 * @return the productId
+	 */
+	public final Integer getProductId() {
 		return productId;
 	}
 
-	public void setProductId(int productId) {
+	/**
+	 * @param productId the productId to set
+	 */
+	public final void setProductId(Integer productId) {
 		this.productId = productId;
 	}
 
-	public int getSellerId() {
+	/**
+	 * @return the sellerId
+	 */
+	public final Integer getSellerId() {
 		return sellerId;
 	}
 
-	public void setSellerId(int sellerId) {
+	/**
+	 * @param sellerId the sellerId to set
+	 */
+	public final void setSellerId(Integer sellerId) {
 		this.sellerId = sellerId;
 	}
 
-	public String getKeyword() {
+	/**
+	 * @return the keyword
+	 */
+	public final String getKeyword() {
 		return keyword;
 	}
 
-	public void setKeyword(String keyword) {
+	/**
+	 * @param keyword the keyword to set
+	 */
+	public final void setKeyword(String keyword) {
 		this.keyword = keyword;
 	}
 
-	public String getBarcode() {
+	/**
+	 * @return the barcode
+	 */
+	public final String getBarcode() {
 		return barcode;
 	}
 
-	public void setBarcode(String barcode) {
+	/**
+	 * @param barcode the barcode to set
+	 */
+	public final void setBarcode(String barcode) {
 		this.barcode = barcode;
 	}
 
-	public ResultFormat getFormat() {
+	/**
+	 * @return the format
+	 */
+	public final ResultFormat getFormat() {
 		return format;
 	}
 
-	public void setFormat(ResultFormat format) {
+	/**
+	 * @param format the format to set
+	 */
+	public final void setFormat(ResultFormat format) {
 		this.format = format;
 	}
 
-	public int getResults() {
+	/**
+	 * @return the results
+	 */
+	public final Integer getResults() {
 		return results;
 	}
 
-	public void setResults(int results) {
+	/**
+	 * @param results the results to set
+	 */
+	public final void setResults(Integer results) {
 		this.results = results;
 	}
 
-	public int getPage() {
+	/**
+	 * @return the page
+	 */
+	public final Integer getPage() {
 		return page;
 	}
 
-	public void setPage(int page) {
+	/**
+	 * @param page the page to set
+	 */
+	public final void setPage(Integer page) {
 		this.page = page;
 	}
 
-	public double getPriceMin() {
+	/**
+	 * @return the priceMin
+	 */
+	public final Double getPriceMin() {
 		return priceMin;
 	}
 
-	public void setPriceMin(double priceMin) {
+	/**
+	 * @param priceMin the priceMin to set
+	 */
+	public final void setPriceMin(Double priceMin) {
 		this.priceMin = priceMin;
 	}
 
-	public double getPriceMax() {
+	/**
+	 * @return the priceMax
+	 */
+	public final Double getPriceMax() {
 		return priceMax;
 	}
 
-	public void setPriceMax(double priceMax) {
+	/**
+	 * @param priceMax the priceMax to set
+	 */
+	public final void setPriceMax(Double priceMax) {
 		this.priceMax = priceMax;
 	}
 
-	public Sort getSort() {
+	/**
+	 * @return the sort
+	 */
+	public final Sort getSort() {
 		return sort;
 	}
 
-	public void setSort(Sort sort) {
+	/**
+	 * @param sort the sort to set
+	 */
+	public final void setSort(Sort sort) {
 		this.sort = sort;
 	}
 
-	public Medal getMedal() {
+	/**
+	 * @return the medal
+	 */
+	public final EBitMedal getMedal() {
 		return medal;
 	}
 
-	public void setMedal(Medal medal) {
+	/**
+	 * @param medal the medal to set
+	 */
+	public final void setMedal(EBitMedal medal) {
 		this.medal = medal;
 	}
 
+	/**
+	 * Build a {@link Map} that represents this instance. The pair 
+	 * key/value of map are the name of fields in object and the values 
+	 * of fields, respectively.
+	 * @return a {@link Map} populated with the values of this instance.
+	 */
 	public Map<String, Object> asMap() {
 		Map<String, Object> result = new HashMap<String, Object>();
 
@@ -148,19 +241,8 @@ public class Filter implements Cloneable {
 				if (fieldValue != null) {
 					result.put(fieldName, fieldValue);
 				}
-			} catch (SecurityException e) {
-				//e.printStackTrace();
-			} catch (NoSuchMethodException e) {
-				//e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				//e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				//e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				//e.printStackTrace();
-			} catch (NullPointerException e) {
-				// TODO: handle exception
-			}
+			} catch (Exception ignored) {
+			} 
 		}
 
 		return result;

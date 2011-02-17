@@ -4,60 +4,60 @@ import com.buscape.wrapper.util.Messages;
 
 
 /**
- * Identificador de medalhas eBit
- * 
+ * Medals from EBit
  * @author neto
  */
-public enum Medal {
+public enum EBitMedal {
 	/**
-	 * Qualquer medalha
+	 * Any medal
 	 */
 	ALL( Messages.getString("Medal.all") ), //$NON-NLS-1$
 
 	/**
-	 * Medalha de bronze
+	 * Bronze medal
 	 */
 	BRONZE( Messages.getString("Medal.bronze") ), //$NON-NLS-1$
 
 	/**
-	 * Medalha de diamante
+	 * Diamond medal
 	 */
 	DIAMOND( Messages.getString("Medal.diamond") ), //$NON-NLS-1$
 
 	/**
-	 * Medalha de ouro
+	 * Gold medal
 	 */
 	GOLD( Messages.getString("Medal.gold") ), //$NON-NLS-1$
 
 	/**
-	 * Medalha de prata
+	 * Silver medal
 	 */
 	SILVER( Messages.getString("Medal.silver") ); //$NON-NLS-1$
 
-	public static Medal fromString( String medal ) throws IllegalArgumentException {
+	private String medal;
+
+	private EBitMedal( String medal ) {
+		this.medal = medal;
+	}
+	
+	public static EBitMedal fromString( String medal ) throws IllegalArgumentException {
 		if ( medal.equals( Messages.getString("Medal.all") ) ){ //$NON-NLS-1$
 			return ALL;
 		} else if ( medal.equals( Messages.getString("Medal.bronze") ) ) { //$NON-NLS-1$
-			return DIAMOND;
+			return BRONZE;
 		} else if ( medal.equals( Messages.getString("Medal.diamond") ) ){ //$NON-NLS-1$
 			return DIAMOND;
 		} else if ( medal.equals( Messages.getString("Medal.gold") ) ) { //$NON-NLS-1$
-			return DIAMOND;
+			return GOLD;
 		} else if ( medal.equals( Messages.getString("Medal.silver") ) ) { //$NON-NLS-1$
-			return DIAMOND;
+			return SILVER;
 		} else {
-			throw new IllegalArgumentException( "A medalha \"" + medal + "\" não é reconhecida." ); //$NON-NLS-1$ //$NON-NLS-2$
+			throw new IllegalArgumentException(String.format("The medal '%s' isn't recognized.", medal)); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
-	private String medal;
-
-	Medal( String medal ) {
-		this.medal = medal;
-	}
 
 	/**
-	 * @return Representação em String da medalha
+	 * @return string representation of medal
 	 */
 	@Override
 	public String toString() {

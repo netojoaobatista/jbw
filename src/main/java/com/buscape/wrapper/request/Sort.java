@@ -3,75 +3,76 @@ package com.buscape.wrapper.request;
 import com.buscape.wrapper.util.Messages;
 
 /**
- * Tipos de ordenação
- * 
+ * Types of sorting available in API calls. 
  * @author neto
  */
 public enum Sort {
+	
 	/**
-	 * Ordenação por preço da parcela <b>Descendente</b>
+	 * Descending ordering by price of parcel.
 	 */
 	D_INSTALLMENT(Messages.getString("Sort.desc-installment")), //$NON-NLS-1$
 
 	/**
-	 * Ordenação por número de parcelas <b>Descendente</b>
+	 * Descending ordering by number of parcels.
 	 */
 	D_NUMBEROFINSTALLMENTS(Messages.getString("Sort.desc-num-installment")), //$NON-NLS-1$
 
 	/**
-	 * Ordenação por preço <b>Descendente</b>
+	 * Descending ordering by price.
 	 */
 	D_PRICE(Messages.getString("Sort.desc-price")), //$NON-NLS-1$
 
 	/**
-	 * Ordenação por avaliação dos usuários <b>Descendente</b>
+	 * Descending ordering by user rating.
 	 */
 	D_RATE(Messages.getString("Sort.desc-rate")), //$NON-NLS-1$
 
 	/**
-	 * Ordenação por loja <b>Descendente</b>
+	 * Descending ordering by seller.
 	 */
 	D_SELLER(Messages.getString("Sort.desc-seller")), //$NON-NLS-1$
 
 	/**
-	 * Ordenação por preço da parcela
+	 * Ascending ordering by price of parcel.
 	 */
 	INSTALLMENT(Messages.getString("Sort.installment")), //$NON-NLS-1$
 
 	/**
-	 * Ordenação por número de parcelas
+	 * Ascending ordering by number of parcel.
 	 */
 	NUMBEROFINSTALLMENTS(Messages.getString("Sort.num-installment")), //$NON-NLS-1$
 
 	/**
-	 * Ordenação por preço
+	 * Ascending ordering by price.
 	 */
 	PRICE(Messages.getString("Sort.price")), //$NON-NLS-1$
 
 	/**
-	 * Ordenação por avaliação dos usuários
+	 * Ascending ordering by user rating.
 	 */
 	RATE(Messages.getString("Sort.rate")), //$NON-NLS-1$
 
 	/**
-	 * Ordenação por loja
+	 * Ascending ordering by seller.
 	 */
 	SELLER(Messages.getString("Sort.seller")), //$NON-NLS-1$
 
 	/**
-	 * Ordenação por selo de empresa reconhecida no BuscaPé
+	 * Ascending ordering by seal of trusted store.
 	 */
 	TRUSTEDSTORE(Messages.getString("Sort.trusted-store")); //$NON-NLS-1$
 
-	/**
-	 * Tipo de ordenação
-	 */
+
 	private String sort;
 
-	Sort( String sort ){
+	private Sort( String sort ){
 		this.sort = sort;
 	}
 
+	/**
+	 * @return string representation of sorting type
+	 */
 	@Override
 	public String toString(){
 		return sort;

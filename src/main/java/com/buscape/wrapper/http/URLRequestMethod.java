@@ -1,17 +1,22 @@
 package com.buscape.wrapper.http;
 
+/**
+ * The methods that can be used in API calls.
+ * @author cartagena
+ */
 public enum URLRequestMethod {
-	DELETE("DELETE"), //$NON-NLS-1$
-	GET("GET"), //$NON-NLS-1$
-	POST("POST"); //$NON-NLS-1$
 	
-	private String method;
-	
-	URLRequestMethod( String requestMethod ){
-		this.method = requestMethod;
-	}
-	
-	public String toString(){
-		return this.method;
-	}
+	/**
+	 * Http DELETE method
+	 */
+	DELETE, //$NON-NLS-1$
+	/**
+	 * Http GET method
+	 */
+	GET, //$NON-NLS-1$
+	/**
+	 * Http POST method
+	 */
+	POST; //$NON-NLS-1$
+
 }
