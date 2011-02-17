@@ -1,5 +1,7 @@
 package com.buscape.wrapper.request;
 
+import com.buscape.wrapper.util.Messages;
+
 /**
  * Código do país que será utilizado na requisição
  * 

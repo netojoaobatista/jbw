@@ -5,10 +5,10 @@ import java.util.Map.Entry;
 
 import com.buscape.wrapper.request.Country;
 import com.buscape.wrapper.request.Filter;
+import com.buscape.wrapper.request.Medal;
 import com.buscape.wrapper.request.Service;
 import com.buscape.wrapper.request.Sort;
 import com.buscape.wrapper.result.ResultFormat;
-import com.buscape.wrapper.shared.Medal;
 import com.buscape.wrapper.util.Messages;
 
 

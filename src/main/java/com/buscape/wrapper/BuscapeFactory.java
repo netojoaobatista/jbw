@@ -1,12 +1,10 @@
 package com.buscape.wrapper;
 
-import com.buscape.wrapper.http.HTTPRequest;
-import com.buscape.wrapper.http.URLRequest;
+import com.buscape.wrapper.http.HttpRequester;
 import com.buscape.wrapper.result.ResultFormat;
-import com.buscape.wrapper.result.adapter.Adaptable;
-import com.buscape.wrapper.result.adapter.json.JsonAdapter;
 import com.buscape.wrapper.result.builder.AbstractResultBuilder;
 import com.buscape.wrapper.result.builder.JsonResultBuilder;
+import com.buscape.wrapper.result.builder.XmlResultBuilder;
 
 /**
  * Fábrica de objetos utilizados pelo wrapper da API do BuscaPé
@@ -17,19 +15,19 @@ public class BuscapeFactory {
 	/**
 	 * Cria uma instância do objeto Builder que é utilizado para construção dos
 	 * objetos do retorno
-	 * @param adapter 
+	 * @param data 
 	 * 
 	 * @return
 	 */
-	public AbstractResultBuilder createBuilder(Adaptable<?> adapter, ResultFormat format){
+	public AbstractResultBuilder createBuilder(String data, ResultFormat format){
 		AbstractResultBuilder builder = null;
 
 		switch ( format ) {
 			case JSON:
-				builder = new JsonResultBuilder(adapter);
+				builder = new JsonResultBuilder(data);
 				break;
 			case XML:
-				throw new IllegalArgumentException( "O formato de retorno XML não foi implementado" ); //$NON-NLS-1$
+				builder = new XmlResultBuilder(data);
 		}
 
 		return builder;
@@ -38,35 +36,11 @@ public class BuscapeFactory {
 	/**
 	 * Cria uma instância do objeto de requisição HTTP, utilizado para enviar a
 	 * requisição à API do BuscaPé
+	 * @param url 
 	 * 
 	 * @return
 	 */
-	public HTTPRequest createHTTPRequest() {
-		return new URLRequest();
-	}
-
-	/**
-	 * Cria uma instância do objeto Adapter, utilizado para abstrair o uso de
-	 * bibliotecas de terceiros para o tratamento dos objetos de retorno
-	 * 
-	 * @param data
-	 *            A string retornada pela requisição HTTP
-	 * @param format
-	 *            O formato da resposta, para criação do objeto Adapter
-	 * @return O adaptador abstrato
-	 * @throws Throwable
-	 */
-	public Adaptable<?> createObjectAdapter( String data , ResultFormat format ) throws Throwable {
-		Adaptable<?> adapter = null;
-
-		switch ( format ) {
-			case JSON:
-				adapter = new JsonAdapter(data);
-				break;
-			case XML:
-				throw new IllegalArgumentException( "O formato de retorno XML não foi implementado" ); //$NON-NLS-1$
-		}
-
-		return adapter;
+	public HttpRequester createRequester(String url) {
+		return new HttpRequester(url);
 	}
 }

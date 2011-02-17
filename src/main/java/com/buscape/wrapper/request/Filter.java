@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.buscape.wrapper.result.ResultFormat;
-import com.buscape.wrapper.shared.Medal;
 
 public class Filter implements Cloneable {
 

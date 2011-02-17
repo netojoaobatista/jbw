@@ -1,273 +1,265 @@
 package com.buscape.wrapper.result.builder;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
 
-import com.buscape.wrapper.result.Result;
-import com.buscape.wrapper.result.adapter.Adaptable;
-import com.buscape.wrapper.result.adapter.json.JsonAdapter;
-import com.buscape.wrapper.result.type.Category;
-import com.buscape.wrapper.result.type.Contact;
-import com.buscape.wrapper.result.type.Item;
-import com.buscape.wrapper.result.type.Link;
-import com.buscape.wrapper.result.type.Offer;
-import com.buscape.wrapper.result.type.Product;
-import com.buscape.wrapper.result.type.Rating;
-import com.buscape.wrapper.result.type.RatingEntry;
-import com.buscape.wrapper.result.type.RatingEntry.RatingKind;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import com.buscape.wrapper.result.type.AddressType;
+import com.buscape.wrapper.result.type.AddressesType;
+import com.buscape.wrapper.result.type.CategoryType;
+import com.buscape.wrapper.result.type.ContactType;
+import com.buscape.wrapper.result.type.ContactsType;
+import com.buscape.wrapper.result.type.FilterType;
+import com.buscape.wrapper.result.type.FiltersType;
+import com.buscape.wrapper.result.type.ItemListType;
+import com.buscape.wrapper.result.type.LinkType;
+import com.buscape.wrapper.result.type.LinksType;
+import com.buscape.wrapper.result.type.OfferType;
+import com.buscape.wrapper.result.type.ProductType;
+import com.buscape.wrapper.result.type.Result;
 import com.buscape.wrapper.util.Messages;
+import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.InstanceCreator;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 public class JsonResultBuilder extends AbstractResultBuilder {
 
-	
-	private final JsonAdapter adapter;
+	private final String data;
 	private static final Gson gson;
 
 	static {
-		Type listLinkType = new TypeToken<List<Link>>() {}.getType();
-		Type listContactType = new TypeToken<List<Contact>>() {}.getType();
-		Type listOfferType = new TypeToken<List<Offer>>() {}.getType();
-		Type listCategoryType = new TypeToken<List<Category>>() {}.getType();
-		Type listProductType = new TypeToken<List<Product>>() {}.getType();
-		Type listItemType = new TypeToken<List<Item>>() {}.getType();
+		Type listOfferType = new TypeToken<List<OfferType>>() {}.getType();
+		Type listCategoryType = new TypeToken<List<CategoryType>>() {}.getType();
+		Type listProductType = new TypeToken<List<ProductType>>() {}.getType();
+		Type listItemType = new TypeToken<List<ItemListType>>() {}.getType();
 
 		gson = new GsonBuilder()
-				.registerTypeAdapter(Rating.class, new RatingDeserializer())
-				.registerTypeAdapter(listContactType, new ContatctDeserializer())
-				.registerTypeAdapter(listLinkType, new LinkDeserializer())
-				.registerTypeAdapter(listOfferType, new OfferDeserializer())
-				.registerTypeAdapter(listCategoryType, new CategoryDeserializer())
-				.registerTypeAdapter(listProductType, new ProductDeserializer())
-				.registerTypeAdapter(listItemType, new ItemDeserializer())
-				.create();
-	}
-
-	public JsonResultBuilder(Adaptable<?> adapter) {
-		super();
-		if(!(adapter instanceof JsonAdapter)) {
-			throw new IllegalArgumentException("Argument adapter is not a JsonAdapter."); //$NON-NLS-1$
-		}
+		.setFieldNamingStrategy(new XmlAttributeNamingStrategy())
+		.registerTypeAdapter(AddressesType.class, new AddressesTypeDeserializer())
+		.registerTypeAdapter(ContactsType.class, new ContactsTypeDeserializer())
+		.registerTypeAdapter(FiltersType.class, new FiltersTypeDeserializer())
+		.registerTypeAdapter(LinksType.class, new LinksTypeDeserializer())
 		
-		this.adapter = (JsonAdapter) adapter;		
-	}
-
-	/* (non-Javadoc)
-	 * @see com.buscape.wrapper.result.builder.AbstractResultBuilder#buildCategory()
-	 */
-	@Override
-	public AbstractResultBuilder buildCategory() {
-		Category category = new Category();
-		if(adapter.hasCategory()) {
-			category = gson.fromJson(adapter.getCategory(), Category.class);			
-		}
+		.registerTypeAdapter(listCategoryType, new CategoryTypeListDeserializer())
+		.registerTypeAdapter(listItemType, new ItemListTypeListDeserializer())
+		.registerTypeAdapter(listOfferType, new OfferTypeListDeserializer())
+		.registerTypeAdapter(listProductType, new ProductTypeListDeserializer())
 		
-		result.setCategory(category);
-		return this;
+		.registerTypeAdapter(XMLGregorianCalendar.class, new XMLGregorianCalendarInstanceCreator())
+		.create();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.buscape.wrapper.result.builder.AbstractResultBuilder#buildOffer()
-	 */
-	@Override
-	public AbstractResultBuilder buildOffer() {
-		if(adapter.hasOffer()) {
-			Type listOfferType = new TypeToken<List<Offer>>() {}.getType();
-			final List<Offer> offers = gson.fromJson(adapter.getOffer(), listOfferType);
-			for (Offer offer : offers) {
-				result.addOffer(offer);
-			}
-		}
-		
-		return this;
+	public JsonResultBuilder(String rawdata) {
+		this.data = rawdata;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.buscape.wrapper.result.builder.AbstractResultBuilder#buildProduct()
-	 */
-	@Override
-	public AbstractResultBuilder buildProduct() {
-		if(adapter.hasProduct()) {
-			Type listProductType = new TypeToken<List<Product>>() {}.getType();
-			List<Product> products = gson.fromJson(adapter.getProduct(), listProductType);
-			for(Product product : products) {
-				result.addProduct(product);
+	private static class XMLGregorianCalendarInstanceCreator implements InstanceCreator<XMLGregorianCalendar> {
+		public XMLGregorianCalendar createInstance(Type type) {
+
+			try {
+				GregorianCalendar gc = new GregorianCalendar();
+				DatatypeFactory dtf = DatatypeFactory.newInstance();
+				return dtf.newXMLGregorianCalendar(gc);
+			} catch (DatatypeConfigurationException e) {
+				e.printStackTrace();
 			}
+
+			return null;
 		}
-		
-		return this;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.buscape.wrapper.result.builder.AbstractResultBuilder#buildSubcategory()
-	 */
-	@Override
-	public AbstractResultBuilder buildSubcategory() {
-		if(adapter.hasSubcategory()) {
-			Type listCategoryType = new TypeToken<List<Category>>() {}.getType();
-			List<Category> subategories = gson.fromJson(adapter.getSubcategory(), listCategoryType);
-			for(Category category : subategories) {
-				result.getCategory().addSubCategory(category);
-			}
-		}
-		return this;
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.buscape.wrapper.result.builder.AbstractResultBuilder#buildTop5Category()
-	 */
-	@Override
-	public AbstractResultBuilder buildTop5Category() {
-		if(adapter.hasTop5Category()) {
-			Type listCategoryType = new TypeToken<List<Category>>() {}.getType();
-			List<Category> topCategories = gson.fromJson(adapter.getTop5Category(), listCategoryType);
-			for(Category category : topCategories) {
-				result.getCategory().addTop5Category(category);
-			}
-		}
-		return this;
-	}
-	
-	/* (non-Javadoc)
-	 * @see com.buscape.wrapper.result.builder.AbstractResultBuilder#getResult()
-	 */
 	@Override
 	public Result getResult() {
+		if(result == null) {
+			JsonObject root = new JsonParser().parse(this.data).getAsJsonObject();
+			result = gson.fromJson(root, Result.class);
+		}
+		
 		return result;
 	}
 	
-	private static class LinkDeserializer implements JsonDeserializer<List<Link>> {
+	private static class AddressesTypeDeserializer implements JsonDeserializer<AddressesType> {
 
 		@Override
-		public List<Link> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-			List<Link> result = new ArrayList<Link>();
+		public AddressesType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+			AddressesType result = new AddressesType();
+			List<AddressType> list = new ArrayList<AddressType>();
+			
+			Iterator<JsonElement> it = json.getAsJsonArray().iterator();
+			while (it.hasNext()) {
+				JsonObject jsonEntry = it.next().getAsJsonObject();
+				AddressType entry = context.deserialize(jsonEntry.get("address"), AddressType.class);
+				list.add(entry);
+			}
+			
+			
+			result.setAddress(list);
+
+			return result;
+		}
+	}
+	
+	private static class ContactsTypeDeserializer implements JsonDeserializer<ContactsType> {
+
+		@Override
+		public ContactsType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+			ContactsType result = new ContactsType();
+			List<ContactType> list = new ArrayList<ContactType>();
+			
+			Iterator<JsonElement> it = json.getAsJsonArray().iterator();
+			while (it.hasNext()) {
+				JsonObject jsonEntry = it.next().getAsJsonObject();
+				ContactType entry = context.deserialize(jsonEntry.get("contact"), ContactType.class);
+				list.add(entry);
+			}
+			
+			
+			result.setContact(list);
+
+			return result;
+		}
+	}
+	
+	private static class FiltersTypeDeserializer implements JsonDeserializer<FiltersType> {
+
+		@Override
+		public FiltersType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+			FiltersType result = new FiltersType();
+			List<FilterType> list = new ArrayList<FilterType>();
+			
+			Iterator<JsonElement> it = json.getAsJsonArray().iterator();
+			while (it.hasNext()) {
+				JsonObject jsonEntry = it.next().getAsJsonObject();
+				FilterType entry = context.deserialize(jsonEntry.get("contact"), FilterType.class);
+				list.add(entry);
+			}
+			
+			
+			result.setFilter(list);
+
+			return result;
+		}
+	}
+
+	private static class LinksTypeDeserializer implements JsonDeserializer<LinksType> {
+
+		@Override
+		public LinksType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+			LinksType result = new LinksType();
+			List<LinkType> list = new ArrayList<LinkType>();
+			
+			Iterator<JsonElement> it = json.getAsJsonArray().iterator();
+			while (it.hasNext()) {
+				JsonObject jsonEntry = it.next().getAsJsonObject();
+				LinkType entry = context.deserialize(jsonEntry.get("link"),  LinkType.class); 
+				list.add(entry);
+			}
+			
+			result.setLink(list);
+
+			return result;
+		}
+	}
+	
+	private static class CategoryTypeListDeserializer implements JsonDeserializer<List<CategoryType>> {
+
+		@Override
+		public List<CategoryType> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+			List<CategoryType> result = new ArrayList<CategoryType>();
 
 			Iterator<JsonElement> it = json.getAsJsonArray().iterator();
 			while (it.hasNext()) {
-				JsonObject link = it.next().getAsJsonObject();
-				result.add(gson.fromJson(link.get(Messages.getString("Json.link-key")), Link.class)); //$NON-NLS-1$
+				JsonObject jsonEntry = it.next().getAsJsonObject();
+				String name = jsonEntry.get(Messages.getString("Json.subcategory-key")) != null ? //$NON-NLS-1$
+						Messages.getString("Json.subcategory-key") : //$NON-NLS-1$
+						Messages.getString("Json.top5category-key"); //$NON-NLS-1$
+				
+				CategoryType entry = context.deserialize(jsonEntry.get(name),  CategoryType.class);   
+				result.add(entry); 
 			}
 
 			return result;
 		}
 	}
 	
-	private static class ItemDeserializer implements JsonDeserializer<List<Item>> {
+	private static class ItemListTypeListDeserializer implements JsonDeserializer<List<ItemListType>> {
 
 		@Override
-		public List<Item> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-			List<Item> result = new ArrayList<Item>();
+		public List<ItemListType> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+			List<ItemListType> result = new ArrayList<ItemListType>();
 
 			Iterator<JsonElement> it = json.getAsJsonArray().iterator();
 			while (it.hasNext()) {
-				JsonObject link = it.next().getAsJsonObject();
-				result.add(gson.fromJson(link.get(Messages.getString("Json.item-key")), Item.class)); //$NON-NLS-1$
-			}
-
-			return result;
-		}
-	}
-
-	private static class OfferDeserializer implements JsonDeserializer<List<Offer>> {
-
-		@Override
-		public List<Offer> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-			List<Offer> result = new ArrayList<Offer>();
-
-			Iterator<JsonElement> it = json.getAsJsonArray().iterator();
-			while (it.hasNext()) {
-				JsonObject off = it.next().getAsJsonObject();
-				result.add(gson.fromJson(off.get(Messages.getString("Json.offer-key")), Offer.class)); //$NON-NLS-1$
-			}
-
-			return result;
-		}
-	}
-
-	private static class ContatctDeserializer implements JsonDeserializer<List<Contact>> {
-
-		@Override
-		public List<Contact> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-			List<Contact> result = new ArrayList<Contact>();
-
-			Iterator<JsonElement> it = json.getAsJsonArray().iterator();
-			while (it.hasNext()) {
-				JsonObject off = it.next().getAsJsonObject();
-				result.add(gson.fromJson(off.get(Messages.getString("Json.contact-key")), Contact.class)); //$NON-NLS-1$
+				JsonObject jsonEntry = it.next().getAsJsonObject();
+				ItemListType entry = context.deserialize(jsonEntry.get(Messages.getString("Json.item-key")),  ItemListType.class);   //$NON-NLS-1$
+				result.add(entry);
 			}
 
 			return result;
 		}
 	}
 	
-	private static class ProductDeserializer implements JsonDeserializer<List<Product>> {
+	private static class OfferTypeListDeserializer implements JsonDeserializer<List<OfferType>> {
 
 		@Override
-		public List<Product> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-			List<Product> result = new ArrayList<Product>();
+		public List<OfferType> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+			List<OfferType> result = new ArrayList<OfferType>();
 
 			Iterator<JsonElement> it = json.getAsJsonArray().iterator();
 			while (it.hasNext()) {
-				JsonObject off = it.next().getAsJsonObject();
-				result.add(gson.fromJson(off.get(Messages.getString("Json.product-key")), Product.class)); //$NON-NLS-1$
+				JsonObject jsonEntry = it.next().getAsJsonObject();
+				OfferType entry = context.deserialize(jsonEntry.get(Messages.getString("Json.offer-key")),  OfferType.class);   //$NON-NLS-1$
+				result.add(entry); 
 			}
 
 			return result;
 		}
 	}
 	
-	private static class CategoryDeserializer implements JsonDeserializer<List<Category>> {
+	private static class ProductTypeListDeserializer implements JsonDeserializer<List<ProductType>> {
 
 		@Override
-		public List<Category> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-			List<Category> result = new ArrayList<Category>();
+		public List<ProductType> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+			List<ProductType> result = new ArrayList<ProductType>();
 
 			Iterator<JsonElement> it = json.getAsJsonArray().iterator();
 			while (it.hasNext()) {
-				JsonObject off = it.next().getAsJsonObject();
-				String name = off.get(Messages.getString("Json.subcategory-key")) != null ? Messages.getString("Json.subcategory-key") : Messages.getString("Json.top5category-key");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-				result.add(gson.fromJson(off.get(name), Category.class));
+				JsonObject jsonEntry = it.next().getAsJsonObject();
+				ProductType entry = context.deserialize(jsonEntry.get(Messages.getString("Json.product-key")),  ProductType.class);   //$NON-NLS-1$
+				result.add(entry); 
 			}
 
 			return result;
+		}
+	}
+
+	private static class XmlAttributeNamingStrategy implements FieldNamingStrategy {
+
+		@Override
+		public String translateName(Field f) {
+			XmlAttribute xmlAttribute = f.getAnnotation(XmlAttribute.class);
+			if (xmlAttribute != null) {
+				return xmlAttribute.name();
+			} else {
+				return f.getName();
+			}
 		}
 		
 	}
-
-	private static class RatingDeserializer implements JsonDeserializer<Rating> {
-
-		@Override
-		public Rating deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-			Rating result = new Rating();
-
-			for (Entry<String, JsonElement> entry : json.getAsJsonObject().entrySet()) {
-				RatingEntry rating = gson.fromJson(entry.getValue(), RatingEntry.class);
-				RatingKind kind = RatingKind.fromString(entry.getKey());
-				rating.setKing(kind);
-				switch (kind) {
-				case EBIT:
-
-					result.seteBitRating(rating);
-					break;
-
-				case USER:
-					result.setUserAverageRating(rating);
-					break;
-				}
-			}
-
-			return result;
-		}
-	}
-
 }

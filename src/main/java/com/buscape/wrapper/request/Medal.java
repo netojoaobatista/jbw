@@ -1,4 +1,6 @@
-package com.buscape.wrapper.util;
+package com.buscape.wrapper.request;
+
+import com.buscape.wrapper.util.Messages;
 
 
 /**

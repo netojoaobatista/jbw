@@ -1,14 +1,14 @@
 package com.buscape.wrapper;
 
 import com.buscape.wrapper.exception.BuscapeException;
-import com.buscape.wrapper.http.HTTPRequest;
+import com.buscape.wrapper.http.HttpRequester;
 import com.buscape.wrapper.request.Country;
 import com.buscape.wrapper.request.Filter;
+import com.buscape.wrapper.request.Service;
 import com.buscape.wrapper.request.util.URLBuilder;
-import com.buscape.wrapper.result.Result;
 import com.buscape.wrapper.result.ResultFormat;
-import com.buscape.wrapper.result.adapter.Adaptable;
 import com.buscape.wrapper.result.builder.AbstractResultBuilder;
+import com.buscape.wrapper.result.type.Result;
 
 /**
  * Wrapper da API do BuscaPé para implementações em Java
@@ -17,448 +17,279 @@ import com.buscape.wrapper.result.builder.AbstractResultBuilder;
  */
 public class Buscape {
 
-	/**
-	 * ID da aplicação
-	 */
-	private final String applicationID;
+	private final String applicationId;
 
-	/**
-	 * Fábrica de produtos abstratos
-	 */
 	private final BuscapeFactory factory;
 
-	/**
-	 * Código do país que será utilizado na consulta
-	 */
-	private Country code = Country.BRAZIL;
+	private Country countryCode;
 
-	/**
-	 * Parâmetros da requisição
-	 */
 	private Filter filter;
+	
+	private ResultFormat format;
 
 	/**
-	 * Constroi o objeto do wrapper da API do BuscaPé
+	 * Constructs a wrapper object to Buscapé API, with <code>BRAZIL</code> as
+	 * country and <code>XML</code> as default result format.
 	 * 
-	 * @param applicationID
-	 *            ID da aplicação
+	 * @param applicationId
+	 *            identification of application which will use the API.
+	 * @param countryCode
+	 *            default filter for all requests made in API.
 	 */
-	public Buscape( String applicationID ) {
-		this.applicationID = applicationID;
-
-		factory = new BuscapeFactory();
+	public Buscape(String applicationId, Filter filter) {
+		this(applicationId, filter, Country.BRAZIL, ResultFormat.XML);
 	}
-
+	
 	/**
-	 * Constroi o objeto do wrapper da API do BuscaPé
+	 * Constructs a wrapper object to Buscapé API, with <code>BRAZIL</code> as
+	 * country.
 	 * 
-	 * @param applicationID
-	 *            ID da aplicação
-	 * @param factory
-	 *            Fábrica de objetos abstratos
+	 * @param applicationId
+	 *            identification of application which will use the API.
+	 * @param countryCode
+	 *            default filter for all requests made in API.
 	 */
-	public Buscape( String applicationID , BuscapeFactory factory ) {
-		this.applicationID = applicationID;
-		this.factory = factory;
+	public Buscape(String applicationId, Filter filter, ResultFormat format) {
+		this(applicationId, filter, Country.BRAZIL, format);
 	}
 
 	/**
-	 * Constroi o objeto do wrapper da API do BuscaPé
-	 * @param applicationID ID da aplicação
-	 * @param code Código do país
-	 */
-	public Buscape( String applicationID , Country code ){
-		this( applicationID );
-		this.code = code;
-	}
-
-	/**
-	 * Constroi o objeto do wrapper da API do BuscaPé
-	 * @param applicationID ID da aplicação
-	 * @param code Código do país
-	 * @param factory Fábrica de objetos abstratos
-	 */
-	public Buscape( String applicationID , Country code , BuscapeFactory factory ){
-		this( applicationID , factory );
-		this.code = code;
-	}
-
-	/**
-	 * O serviço de procura de categorias permite que sejam exibidas informações
-	 * relativas às categorias. É possível obter categorias, produtos ou ofertas
-	 * informando apenas um ID de categoria.
+	 * Constructs a wrapper object to Buscapé API.
 	 * 
-	 * @param categoryId
-	 *            O ID da categoria que será buscado
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
+	 * @param applicationId
+	 *            identification of application which will use the API. 
+	 * @param filter
+	 *            default filter for all requests made in API.
+	 * @param countryCode
+	 *            code of country where the API will be used.            
+	 * @param format 
+	 * 			  default result format of requests.
 	 */
-	public Result findCategoryList( int categoryId ) throws BuscapeException {
-		return findCategoryList( categoryId , ResultFormat.JSON );
+	public Buscape(String applicationId, Filter filter, Country countryCode, ResultFormat format) {
+		super();
+		this.applicationId = applicationId;
+		this.countryCode = countryCode;
+		this.filter = filter;
+		this.format = format;
+		this.factory = new BuscapeFactory();
 	}
 
 	/**
-	 * O serviço de procura de categorias permite que sejam exibidas informações
-	 * relativas às categorias. É possível obter categorias, produtos ou ofertas
-	 * informando apenas um ID de categoria.
-	 * 
-	 * @param categoryId
-	 *            O ID da categoria que será buscado
-	 * @param format
-	 *            O Formato da resposta: JSON ou XML
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
+	 * Calls the Category List (<i>findCategoryList</i>) service and return a {@link Result} object
+	 * containing the result of this request. 
+	 * @param categoryId identification of category which will be listed.
+	 * @return a {@link Result} object populated with information of response.
+	 * @throws BuscapeException 
 	 */
-	public Result findCategoryList( int categoryId , ResultFormat format ) throws BuscapeException {
+	public Result categoryList(int categoryId) throws BuscapeException {
 		Filter f = filter.clone();
 		f.setCategoryId(categoryId);
-		f.setFormat(format);
-		return realFindCategoryList(new URLBuilder().asCategoryListService().applicationId(applicationID).countryCode(code).filter(f).build(), format );
+		return callCategoryList(f);
 	}
-
+	
 	/**
-	 * O serviço de procura de categorias permite que sejam exibidas informações
-	 * relativas às categorias. É possível obter categorias, produtos ou ofertas
-	 * informando apenas um ID de categoria.
-	 * 
-	 * @param keyword
-	 *            Palavra chave que será utilizada para fazer a busca
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
+	 * Calls the Category List (<i>findCategoryList</i>) service and return a {@link Result} object
+	 * containing the result of this request.
+	 * @param keyword keyword used to filter the categories.
+	 * @return a {@link Result} object populated with information of response.
+	 * @throws BuscapeException 
 	 */
-	public Result findCategoryList( String keyword ) throws BuscapeException {
-		return findCategoryList( keyword , ResultFormat.JSON );
-	}
-
-	/**
-	 * O serviço de procura de categorias permite que sejam exibidas informações
-	 * relativas às categorias. É possível obter categorias, produtos ou ofertas
-	 * informando apenas um ID de categoria.
-	 * 
-	 * @param keyword
-	 *            Palavra chave que será utilizada para fazer a busca
-	 * @param format
-	 *            O Formato da resposta: JSON ou XML
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
-	 */
-	public Result findCategoryList( String keyword , ResultFormat format ) throws BuscapeException {
+	public Result categoryList(String keyword) throws BuscapeException {
 		Filter f = filter.clone();
 		f.setKeyword(keyword);
-		f.setFormat(format);
-		return realFindCategoryList(new URLBuilder().asCategoryListService().applicationId(applicationID).countryCode(code).filter(f).build(), format );
+		return callCategoryList(f);
 	}
-
+	
 	/**
-	 * Busque todas as ofertas de um determinado produto, filtrando-os por
-	 * avaliação da loja, preço ou popularidade
-	 * 
-	 * @param productId
-	 *            O ID do produto
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
+	 * Calls the Product List (<i>findProductList</i>) service and return a {@link Result} object
+	 * containing the result of this request. 
+	 * @param categoryId TODO
+	 * @return a {@link Result} object populated with information of response.
+	 * @throws BuscapeException 
 	 */
-	public Result findOfferList( int productId ) throws BuscapeException {
-		return findOfferList( productId , ResultFormat.JSON );
+	public Result productList(int categoryId) throws BuscapeException {
+		Filter f = filter.clone();
+		f.setCategoryId(categoryId);
+		return callProductList(f);
 	}
-
+	
 	/**
-	 * Busque todas as ofertas de um determinado produto, filtrando-os por
-	 * avaliação da loja, preço ou popularidade
-	 * 
-	 * @param productId
-	 *            O ID do produto
-	 * @param format
-	 *            O Formato da resposta: JSON ou XML
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
+	 * Calls the Product List (<i>findProductList</i>) service and return a {@link Result} object
+	 * containing the result of this request.
+	 * @param keyword keyword used to filter the products.
+	 * @return a {@link Result} object populated with information of response.
+	 * @throws BuscapeException 
 	 */
-	public Result findOfferList( int productId , ResultFormat format ) throws BuscapeException {
+	public Result productList(String keyword) throws BuscapeException {
+		Filter f = filter.clone();
+		f.setKeyword(keyword);
+		return callProductList(f);
+	}
+		
+	/**
+	 * Calls the Offer List (<i>findOfferList</i>) service and return a {@link Result} object
+	 * containing the result of this request.
+	 * @param categoryId TODO
+	 * @return a {@link Result} object populated with information of response.
+	 * @throws BuscapeException 
+	 */
+	public Result offerListByCategory(int categoryId) throws BuscapeException {
+		Filter f = filter.clone();
+		f.setCategoryId(categoryId);
+		return callOfferList(f);
+	}
+	
+	/**
+	 * Calls the Offer List (<i>findOfferList</i>) service and return a {@link Result} object
+	 * containing the result of this request.
+	 * @param productId TODO
+	 * @return a {@link Result} object populated with information of response.
+	 * @throws BuscapeException 
+	 */
+	public Result offerListByProduct(int productId) throws BuscapeException {
 		Filter f = filter.clone();
 		f.setProductId(productId);
-		f.setFormat(format);
-		return realFindOfferList(new URLBuilder().asOfferListService().applicationId(applicationID).countryCode(code).filter(f).build(), format );
+		return callOfferList(f);
 	}
-
+	
 	/**
-	 * Busque todas as ofertas de um determinado produto, filtrando-os por
-	 * avaliação da loja, preço ou popularidade
-	 * 
-	 * @param productId
-	 *            O ID do produto
-	 * @param keyword
-	 *            Palavra chave que será utilizada em conjunto com o ID do
-	 *            produto
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
+	 * Calls the Offer List (<i>findOfferList</i>) service and return a {@link Result} object
+	 * containing the result of this request.
+	 * @param barcode TODO
+	 * @return a {@link Result} object populated with information of response.
+	 * @throws BuscapeException 
 	 */
-	public Result findOfferList( int productId , String keyword ) throws BuscapeException {
-		return findOfferList( productId , keyword , ResultFormat.JSON );
+	public Result offerListByBarcode(String barcode) throws BuscapeException {
+		Filter f = filter.clone();
+		f.setBarcode(barcode);
+		return callOfferList(f);
 	}
-
+	
 	/**
-	 * Busque todas as ofertas de um determinado produto, filtrando-os por
-	 * avaliação da loja, preço ou popularidade
-	 * 
-	 * @param productId
-	 *            O ID do produto
-	 * @param keyword
-	 *            Palavra chave que será utilizada em conjunto com o ID do
-	 *            produto
-	 * @param format
-	 *            O Formato da resposta: JSON ou XML
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
+	 * Calls the Offer List (<i>findOfferList</i>) service and return a {@link Result} object
+	 * containing the result of this request.
+	 * @param keyword TODO
+	 * @return a {@link Result} object populated with information of response.
+	 * @throws BuscapeException 
 	 */
-	public Result findOfferList( int productId , String keyword , ResultFormat format ) throws BuscapeException {
+	public Result offerListByKeyword(String keyword) throws BuscapeException {
+		Filter f = filter.clone();
+		f.setKeyword(keyword);
+		return callOfferList(f);
+	}
+	
+	/**
+	 * Calls the Offer List (<i>findOfferList</i>) service and return a {@link Result} object
+	 * containing the result of this request.
+	 * @param categoryId TODO
+	 * @param keyword TODO
+	 * @return a {@link Result} object populated with information of response.
+	 * @throws BuscapeException 
+	 */
+	public Result offerList(int categoryId, String keyword) throws BuscapeException {
+		Filter f = filter.clone();
+		f.setKeyword(keyword);
+		f.setCategoryId(categoryId);
+		return callOfferList(f);
+	}
+	
+	/**
+	 * Calls the Popular Products List (<i>topProducts</i>) service and return a {@link Result} object
+	 * containing the result of this request.
+	 * @return a {@link Result} object populated with information of response.
+	 * @throws BuscapeException 
+	 */
+	public Result popularProductList() throws BuscapeException {
+		Filter f = filter.clone();
+		return callTopProducts(f);
+	}
+	
+	/**
+	 * Calls the User Rating (<i>viewUserRatings</i>) service and return a {@link Result} object
+	 * containing the result of this request.
+	 * @param productId TODO
+	 * @return a {@link Result} object populated with information of response.
+	 * @throws BuscapeException 
+	 */
+	public Result userRating(int productId) throws BuscapeException {
 		Filter f = filter.clone();
 		f.setProductId(productId);
-		f.setKeyword(keyword);
-		f.setFormat(format);
-		return realFindOfferList(new URLBuilder().asOfferListService().applicationId(applicationID).countryCode(code).filter(f).build(), format );
+		return callUserRating(f);
 	}
-
+	
 	/**
-	 * Busque todas as ofertas de um determinado produto, filtrando-os por
-	 * avaliação da loja, preço ou popularidade
-	 * 
-	 * @param keyword
-	 *            Palavra chave que será utilizada em conjunto com o ID do
-	 *            produto
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
+	 * Calls the Details of a Product (<i>viewProductDetails</i>) service and return a {@link Result} object
+	 * containing the result of this request.
+	 * @param productId TODO
+	 * @return a {@link Result} object populated with information of response.
+	 * @throws BuscapeException 
 	 */
-	public Result findOfferList( String keyword ) throws BuscapeException {
-		return findOfferList( keyword , ResultFormat.JSON );
-	}
-
-	/**
-	 * Busque todas as ofertas de um determinado produto, filtrando-os por
-	 * avaliação da loja, preço ou popularidade
-	 * 
-	 * @param keyword
-	 *            Palavra chave que será utilizada em conjunto com o ID do
-	 *            produto
-	 * @param format
-	 *            O Formato da resposta: JSON ou XML
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
-	 */
-	public Result findOfferList( String keyword , ResultFormat format ) throws BuscapeException {
+	public Result productDetails(int productId) throws BuscapeException {
 		Filter f = filter.clone();
-		f.setKeyword(keyword);
-		f.setFormat(format);
-		return realFindOfferList(new URLBuilder().asOfferListService().applicationId(applicationID).countryCode(code).filter(f).build(), format );
+		f.setProductId(productId);
+		return callProductDetails(f);
 	}
-
+	
 	/**
-	 * Recupera uma lista de produtos utilizando o id da categoria
-	 * 
-	 * @param categoryId
-	 *            O ID da categoria que será utilizado para a busca de produtos
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
+	 * Calls the Details of a Seller (<i>viewSellerDetails</i>) service and return a {@link Result} object
+	 * containing the result of this request.
+	 * @param sellerId TODO
+	 * @return a {@link Result} object populated with information of response.
+	 * @throws BuscapeException 
 	 */
-	public Result findProductList( int categoryId ) throws BuscapeException {
-		return findProductList( categoryId , ResultFormat.JSON );
-	}
-
-	/**
-	 * Recupera uma lista de produtos utilizando o id da categoria
-	 * 
-	 * @param categoryId
-	 *            O ID da categoria que será utilizado para a busca de produtos
-	 * @param format
-	 *            O formato da resposta: JSON ou XML
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
-	 */
-	public Result findProductList( int categoryId , ResultFormat format ) throws BuscapeException {
+	public Result sellerDetails(int sellerId) throws BuscapeException {
 		Filter f = filter.clone();
-		f.setCategoryId(categoryId);
-		f.setFormat(format);
-		return realFindOfferList(new URLBuilder().asProductListService().applicationId(applicationID).countryCode(code).filter(f).build(), format );
+		f.setSellerId(sellerId);
+		return callSellerDetails(f);
+	}	
+	
+	private Result callCategoryList(Filter f) throws BuscapeException {
+		return callGenericService(Service.LIST_CATEGORY, f);
+	}
+	
+	private Result callProductList(Filter f) throws BuscapeException {
+		return callGenericService(Service.LIST_PRODUCT, f);
+	}
+	
+	private Result callOfferList(Filter f) throws BuscapeException {
+		return callGenericService(Service.LIST_OFFER, f);
+	}
+	
+	private Result callTopProducts(Filter f) throws BuscapeException {
+		return callGenericService(Service.TOP_PRODUCTS, f);
+	}
+	
+	private Result callUserRating(Filter f) throws BuscapeException {
+		return callGenericService(Service.USER_RATING, f);
+	}
+	
+	private Result callProductDetails(Filter f) throws BuscapeException {
+		return callGenericService(Service.DETAILS_PRODUCT, f);
+	}
+	
+	private Result callSellerDetails(Filter f) throws BuscapeException {
+		return callGenericService(Service.DETAILS_SELLER, f);
+	}
+	
+	private Result callGenericService(Service service, Filter f) throws BuscapeException {
+		String url = new URLBuilder().service(service).applicationId(applicationId).countryCode(countryCode).filter(f).build();
+		String data = callService(url);
+		AbstractResultBuilder builder = getResultBuilder(data);
+
+		return builder.getResult();
 	}
 
-	/**
-	 * Recupera uma lista de produtos utilizando o id da categoria e palavra
-	 * chave
-	 * 
-	 * @param categoryId
-	 *            O ID da categoria que será utilizado para a busca de produtos
-	 * @param keyword
-	 *            A palavra chave que será utilizada em conjunto com o ID da
-	 *            categoria
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
-	 */
-	public Result findProductList( int categoryId , String keyword ) throws BuscapeException {
-		return findProductList( categoryId , keyword , ResultFormat.JSON );
-	}
-
-	/**
-	 * Recupera uma lista de produtos utilizando o id da categoria e palavra
-	 * chave
-	 * 
-	 * @param categoryId
-	 *            O ID da categoria que será utilizado para a busca de produtos
-	 * @param keyword
-	 *            A palavra chave que será utilizada em conjunto com o ID da
-	 *            categoria
-	 * @param format
-	 *            O formato da resposta: JSON ou XML
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
-	 */
-	public Result findProductList( int categoryId , String keyword , ResultFormat format ) throws BuscapeException {
-		Filter f = filter.clone();
-		f.setCategoryId(categoryId);
-		f.setKeyword(keyword);
-		f.setFormat(format);
-		return realFindOfferList(new URLBuilder().asProductListService().applicationId(applicationID).countryCode(code).filter(f).build(), format );
-	}
-
-	/**
-	 * Recupera uma lista de produtos por palavra chave
-	 * 
-	 * @param keyword
-	 *            A palavra chave que será utilizada para a busca de produtos
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
-	 */
-	public Result findProductList( String keyword ) throws BuscapeException {
-		return findProductList( keyword , ResultFormat.JSON );
-	}
-
-	/**
-	 * Recupera uma lista de produtos por palavra chave
-	 * 
-	 * @param keyword
-	 *            A palavra chave que será utilizada para a busca de produtos
-	 * @param format
-	 *            O formato da resposta: JSON ou XML
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
-	 */
-	public Result findProductList( String keyword , ResultFormat format ) throws BuscapeException {
-		Filter f = filter.clone();
-		f.setKeyword(keyword);
-		f.setFormat(format);
-		return realFindOfferList(new URLBuilder().asProductListService().applicationId(applicationID).countryCode(code).filter(f).build(), format );
-	}
-
-	/**
-	 * Faz a consulta pelos serviços da API do BuscaPé
-	 * 
-	 * @param url
-	 *            Endereço da consulta
-	 * @param format
-	 *            Formato da resposta
-	 * @return
-	 * @throws BuscapeException
-	 */
-	private AbstractResultBuilder getBuscapeData(String url, ResultFormat format) throws BuscapeException {
+	private String callService(String url) throws BuscapeException {
 		try {
-			final HTTPRequest request = factory.createHTTPRequest();
-
-			request.setURL(url);
-
-			String data = request.getResponse();
-
-			Adaptable<?> adapter = factory.createObjectAdapter(data, format);
-			return factory.createBuilder(adapter, format);
-		} catch (final Throwable e) {
-			throw new BuscapeException(e);
-		}
-	}
-
-	/**
-	 * Efetivamente faz a busca por categorias
-	 * 
-	 * @param url
-	 *            Endereço da requisição
-	 * @param format
-	 *            Formato da resposta
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
-	 */
-	private Result realFindCategoryList( String url , ResultFormat format ) throws BuscapeException {
-		try {
-			final AbstractResultBuilder builder = getBuscapeData( url , format );
+			final HttpRequester request = factory.createRequester(url);
 			
-			return builder.buildCategory().buildSubcategory().buildTop5Category().getResult();
-		} catch ( final Throwable e ) {
-			throw new BuscapeException( e );
+			return request.getResponse();
+		} catch (Exception e) {
+			throw new BuscapeException(String.format("Erro on calling service: %s.", url), e);
 		}
 	}
-
-	/**
-	 * Efetivamente faz a busca por ofertas
-	 * 
-	 * @param url
-	 *            Endereço da requisição
-	 * @param format
-	 *            Formato da resposta
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
-	 */
-	private Result realFindOfferList( String url , ResultFormat format ) throws BuscapeException {
-		try {
-			final AbstractResultBuilder builder = getBuscapeData( url , format );
-
-			return builder.buildCategory().buildProduct().buildOffer().getResult();
-		} catch ( final Throwable e ) {
-			throw new BuscapeException( e );
-		}
-	}
-
-	/**
-	 * Efetivamente faz a busca de produtos
-	 * 
-	 * @param url
-	 *            Endereço da requisição
-	 * @param format
-	 *            Formato da requisição
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
-	 */
-	private Result realFindProductList( String url , ResultFormat format ) throws BuscapeException {
-		try {
-			final AbstractResultBuilder builder = getBuscapeData( url , format );
-
-			return builder.buildCategory().buildProduct().getResult();
-		} catch ( final Throwable e ) {
-			throw new BuscapeException( e );
-		}
-	}
-
-	/**
-	 * Define os filtros da requisição
-	 * 
-	 * @param parameters
-	 */
-	public void setParameters( Filter parameters ){
-		this.filter = parameters;
-	}
-
-	/**
-	 * Este serviço retorna os produtos mais populares do BuscaPé
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
-	 */
-	public Result topProducts() throws BuscapeException {
-		return topProducts( ResultFormat.JSON );
-	}
-
-	/**
-	 * Este serviço retorna os produtos mais populares do BuscaPé
-	 * @param format O Formato da resposta: JSON ou XML
-	 * @return Resultado da consulta
-	 * @throws BuscapeException
-	 */
-	public Result topProducts( ResultFormat format ) throws BuscapeException {
-		Filter f = filter.clone();
-		f.setFormat(format);		
-		return realFindProductList(new URLBuilder().asTopProductsService().applicationId(applicationID).countryCode(code).filter(f).build(), format );
+	
+	private AbstractResultBuilder getResultBuilder(String data) {
+		return factory.createBuilder(data, format);
 	}
 }
