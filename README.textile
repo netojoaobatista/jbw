@@ -6,6 +6,7 @@ h2. Developers
 
 h3. API Documentation 
 
+* "Javadoc":http://cartagena.github.com/jbw/javadoc/
 * "pt-br":http://developer.buscape.com/api/
 * "en":http://developer.buscape.com/en/api/
 
