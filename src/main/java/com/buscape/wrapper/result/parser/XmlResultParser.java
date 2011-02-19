@@ -12,7 +12,7 @@ import com.buscape.wrapper.result.type.Result;
  * Implementation of AbstractResultParser that parses data in XML format to Result.
  * @author cartagena
  */
-public class XmlResultParser extends AbstractResultParser {
+public final class XmlResultParser extends AbstractResultParser {
 	
 	private XmlResultParser(String data) {
 		super(data);

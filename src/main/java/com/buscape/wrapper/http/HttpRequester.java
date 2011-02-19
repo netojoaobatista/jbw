@@ -8,7 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class HttpRequester {
+public final class HttpRequester {
 	
 	private HttpURLConnection conn;
 	private URLRequestMethod method;

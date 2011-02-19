@@ -10,7 +10,7 @@ import com.buscape.wrapper.result.parser.XmlResultParser;
  * 
  * @author neto
  */
-public class BuscapeFactory {
+final class BuscapeFactory {
 	
 	/**
 	 * Creates an instance of {@link AbstractResultParser} used to parse, 

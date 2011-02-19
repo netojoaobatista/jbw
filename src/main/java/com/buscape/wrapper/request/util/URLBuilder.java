@@ -1,28 +1,32 @@
 package com.buscape.wrapper.request.util;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import com.buscape.wrapper.request.Country;
-import com.buscape.wrapper.request.Filter;
 import com.buscape.wrapper.request.EBitMedal;
+import com.buscape.wrapper.request.Filter;
+import com.buscape.wrapper.request.Parameters;
 import com.buscape.wrapper.request.Service;
 import com.buscape.wrapper.request.Sort;
 import com.buscape.wrapper.result.ResultFormat;
 import com.buscape.wrapper.util.Messages;
 
 
-public class URLBuilder {
+public final class URLBuilder {
 	
 	private String hostName;	
 	private Service service;
 	private String applicationId;
 	private Country countryCode;
 	private Filter filter;
+	private Parameters parameters;
 	
 	public URLBuilder() {
 		hostName = Messages.getString("URLBuilder.main-url"); //$NON-NLS-1$
 		filter = new Filter();
+		parameters= new Parameters();
 	}
 	
 	public URLBuilder service(Service service) {
@@ -80,48 +84,53 @@ public class URLBuilder {
 		return this;
 	}
 	
-	public URLBuilder filter(Filter parameters) {
-		this.filter = parameters;
+	public URLBuilder filter(Filter filter) {
+		this.filter = filter;
 		return this;
 	}
 	
-	public URLBuilder categoryIdFilter(String categoryId) {
-		filter.setCategoryId(Integer.parseInt(categoryId));
+	public URLBuilder parameters(Parameters parameters) {
+		this.parameters = parameters;
 		return this;
 	}
 	
-	public URLBuilder categoryIdFilter(int categoryId) {
-		filter.setCategoryId(categoryId);
+	public URLBuilder categoryIdParam(String categoryId) {
+		parameters.setCategoryId(Integer.parseInt(categoryId));
 		return this;
 	}
 	
-	public URLBuilder productIdFilter(String productId) {
-		filter.setProductId(Integer.parseInt(productId));
+	public URLBuilder categoryIdParam(int categoryId) {
+		parameters.setCategoryId(categoryId);
+		return this;
+	}
+	
+	public URLBuilder productIdParam(String productId) {
+		parameters.setProductId(Integer.parseInt(productId));
 		return this;
 	}
 
-	public URLBuilder productIdFilter(int productId) {
-		filter.setProductId(productId);
+	public URLBuilder productIdParam(int productId) {
+		parameters.setProductId(productId);
 		return this;
 	}	
 	
-	public URLBuilder sellerIdFilter(String sellerId) {
-		filter.setSellerId(Integer.parseInt(sellerId));
+	public URLBuilder sellerIdParam(String sellerId) {
+		parameters.setSellerId(Integer.parseInt(sellerId));
 		return this;
 	}
 	
-	public URLBuilder sellerIdFilter(int sellerId) {
-		filter.setSellerId(sellerId);
+	public URLBuilder sellerIdParam(int sellerId) {
+		parameters.setSellerId(sellerId);
 		return this;
 	}
 	
-	public URLBuilder keywordFilter(String keyword) {
-		filter.setKeyword(keyword);
+	public URLBuilder keywordParam(String keyword) {
+		parameters.setKeyword(keyword);
 		return this;
 	}
 	
-	public URLBuilder barcodeFilter(String barcode) {
-		filter.setBarcode(barcode);
+	public URLBuilder barcodeParam(String barcode) {
+		parameters.setBarcode(barcode);
 		return this;
 	}	
 	
@@ -206,17 +215,19 @@ public class URLBuilder {
 		sb.append("/"); //$NON-NLS-1$
 		sb.append(countryCode);
 		sb.append("/?"); //$NON-NLS-1$
-		sb.append(formatParameters());
+		sb.append(formatFiltersAndParameters());
 		
 		return sb.toString();		
 	}
 
-	private String formatParameters() {
-		Map<String, Object> paramsMap = filter.asMap();
+	private String formatFiltersAndParameters() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.putAll(filter.asMap());
+		map.putAll(parameters.asMap());
 		StringBuilder sb = new StringBuilder();
 		
-		if ( paramsMap.size() > 0 ) {
-			for(Entry<String, Object> entry : paramsMap.entrySet()) {
+		if ( map.size() > 0 ) {
+			for(Entry<String, Object> entry : map.entrySet()) {
 				sb.append("&" + entry.getKey() + "=" + entry.getValue()); //$NON-NLS-1$ //$NON-NLS-2$
 			}
 		}

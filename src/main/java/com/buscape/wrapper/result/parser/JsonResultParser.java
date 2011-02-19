@@ -42,7 +42,7 @@ import com.google.gson.reflect.TypeToken;
  * Implementation of AbstractResultParser that parses data in JSON format to Result.
  * @author cartagena
  */
-public class JsonResultParser extends AbstractResultParser {
+public final class JsonResultParser extends AbstractResultParser {
 	
 	private final Gson gson;
 

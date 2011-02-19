@@ -8,21 +8,11 @@ import java.util.Map;
 import com.buscape.wrapper.result.ResultFormat;
 
 /**
- * Represents the filters and parameters that can appear in url used to API calls.
+ * Represents the filters that can appear in url used to API calls.
  * @author cartagena
  */
-public class Filter implements Cloneable {
+public final class Filter implements Cloneable {
 
-	private Integer categoryId;
-	
-	private Integer productId;
-	
-	private Integer sellerId;
-	
-	private String keyword;
-	
-	private String barcode;
-	
 	private ResultFormat format;
 	
 	private Integer results;
@@ -41,11 +31,6 @@ public class Filter implements Cloneable {
 	}
 
 	public Filter(Filter base) {
-		categoryId = base.categoryId;
-		productId = base.productId;
-		sellerId = base.sellerId;
-		keyword = base.keyword;
-		barcode = base.barcode;
 		format = base.format;
 		results = base.results;
 		page = base.page;
@@ -55,77 +40,6 @@ public class Filter implements Cloneable {
 		medal = base.medal;
 	}
 	
-	
-	/**
-	 * @return the categoryId
-	 */
-	public final Integer getCategoryId() {
-		return categoryId;
-	}
-
-	/**
-	 * @param categoryId the categoryId to set
-	 */
-	public final void setCategoryId(Integer categoryId) {
-		this.categoryId = categoryId;
-	}
-
-	/**
-	 * @return the productId
-	 */
-	public final Integer getProductId() {
-		return productId;
-	}
-
-	/**
-	 * @param productId the productId to set
-	 */
-	public final void setProductId(Integer productId) {
-		this.productId = productId;
-	}
-
-	/**
-	 * @return the sellerId
-	 */
-	public final Integer getSellerId() {
-		return sellerId;
-	}
-
-	/**
-	 * @param sellerId the sellerId to set
-	 */
-	public final void setSellerId(Integer sellerId) {
-		this.sellerId = sellerId;
-	}
-
-	/**
-	 * @return the keyword
-	 */
-	public final String getKeyword() {
-		return keyword;
-	}
-
-	/**
-	 * @param keyword the keyword to set
-	 */
-	public final void setKeyword(String keyword) {
-		this.keyword = keyword;
-	}
-
-	/**
-	 * @return the barcode
-	 */
-	public final String getBarcode() {
-		return barcode;
-	}
-
-	/**
-	 * @param barcode the barcode to set
-	 */
-	public final void setBarcode(String barcode) {
-		this.barcode = barcode;
-	}
-
 	/**
 	 * @return the format
 	 */

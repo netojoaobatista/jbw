@@ -4,7 +4,7 @@ package com.buscape.wrapper.http;
  * The methods that can be used in API calls.
  * @author cartagena
  */
-public enum URLRequestMethod {
+enum URLRequestMethod {
 	
 	/**
 	 * Http DELETE method
