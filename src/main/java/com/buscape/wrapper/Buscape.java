@@ -249,7 +249,7 @@ public final class Buscape {
 	}
 	
 	private Result callGenericService(Service service, Parameters f) throws BuscapeException {
-		String url = new URLBuilder().service(service).applicationId(applicationId).countryCode(countryCode).filter(this.filter).parameters(f).build();
+		String url = new URLBuilder().service(service).applicationId(applicationId).countryCode(countryCode).formatFilter(format).filter(this.filter).parameters(f).build();
 		String data = callService(url);
 		AbstractResultParser builder = getResultBuilder(data);
 
@@ -262,7 +262,7 @@ public final class Buscape {
 			
 			return request.getResponse();
 		} catch (Exception e) {
-			throw new BuscapeException(String.format("Erro on calling service: %s.", url), e);
+			throw new BuscapeException(String.format("Erro on calling service: %s.", url), e); //$NON-NLS-1$
 		}
 	}
 	

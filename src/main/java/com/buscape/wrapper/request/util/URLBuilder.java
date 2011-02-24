@@ -20,6 +20,7 @@ public final class URLBuilder {
 	private Service service;
 	private String applicationId;
 	private Country countryCode;
+	private ResultFormat format;
 	private Filter filter;
 	private Parameters parameters;
 	
@@ -27,6 +28,7 @@ public final class URLBuilder {
 		hostName = Messages.getString("URLBuilder.main-url"); //$NON-NLS-1$
 		filter = new Filter();
 		parameters= new Parameters();
+		format = ResultFormat.XML;
 	}
 	
 	public URLBuilder service(Service service) {
@@ -135,12 +137,12 @@ public final class URLBuilder {
 	}	
 	
 	public URLBuilder formatFilter(String format) {
-		filter.setFormat(ResultFormat.valueOf(format));
+		this.format = ResultFormat.fromString(format);
 		return this;
 	}
 	
 	public URLBuilder formatFilter(ResultFormat format) {
-		filter.setFormat(format);
+		this.format = format;
 		return this;
 	}
 	
@@ -213,7 +215,7 @@ public final class URLBuilder {
 		sb.append("/"); //$NON-NLS-1$
 		sb.append(applicationId);
 		sb.append("/"); //$NON-NLS-1$
-		sb.append(countryCode);
+		sb.append(countryCode.code());
 		sb.append("/?"); //$NON-NLS-1$
 		sb.append(formatFiltersAndParameters());
 		
@@ -224,6 +226,8 @@ public final class URLBuilder {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.putAll(filter.asMap());
 		map.putAll(parameters.asMap());
+		map.put(Messages.getString("URLBuilder.format"), this.format.toString()); //$NON-NLS-1$
+		
 		StringBuilder sb = new StringBuilder();
 		
 		if ( map.size() > 0 ) {

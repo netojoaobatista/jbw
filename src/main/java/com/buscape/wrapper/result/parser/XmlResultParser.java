@@ -31,7 +31,7 @@ public final class XmlResultParser extends AbstractResultParser {
 	public Result getResult() {
 
 		try {
-			JAXBContext jc = JAXBContext.newInstance("com.buscape.wrapper.result.type");
+			JAXBContext jc = JAXBContext.newInstance("com.buscape.wrapper.result.type"); //$NON-NLS-1$
 			Unmarshaller unmarshaller = jc.createUnmarshaller();
 
 			Result result = (Result) unmarshaller.unmarshal(new ByteArrayInputStream(this.data.getBytes()));

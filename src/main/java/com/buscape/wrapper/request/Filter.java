@@ -5,15 +5,11 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.buscape.wrapper.result.ResultFormat;
-
 /**
  * Represents the filters that can appear in url used to API calls.
  * @author cartagena
  */
 public final class Filter implements Cloneable {
-
-	private ResultFormat format;
 	
 	private Integer results;
 	
@@ -31,27 +27,12 @@ public final class Filter implements Cloneable {
 	}
 
 	public Filter(Filter base) {
-		format = base.format;
 		results = base.results;
 		page = base.page;
 		priceMin = base.priceMin;
 		priceMax = base.priceMax;
 		sort = base.sort;
 		medal = base.medal;
-	}
-	
-	/**
-	 * @return the format
-	 */
-	public final ResultFormat getFormat() {
-		return format;
-	}
-
-	/**
-	 * @param format the format to set
-	 */
-	public final void setFormat(ResultFormat format) {
-		this.format = format;
 	}
 
 	/**

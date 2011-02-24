@@ -29,4 +29,19 @@ public enum ResultFormat {
 	public String toString() {
 		return format;
 	}
+	
+	/**
+	 * Returns a instance equivalent to the value.
+	 * @param value the value of {@link ResultFormat}.
+	 * @return a {@link ResultFormat} equivalent to value.
+	 */
+	public static ResultFormat fromString(String value) {
+		if(Messages.getString("ResultFormat.json").equals(value)) { //$NON-NLS-1$
+			return JSON;
+		} else if(Messages.getString("ResultFormat.xml").equals(value)) { //$NON-NLS-1$
+			return XML;
+		} else {
+			throw new IllegalArgumentException(String.format("The string '%s' is not a valid result format.", value)); //$NON-NLS-1$
+		}
+	}
 }
