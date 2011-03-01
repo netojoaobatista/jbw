@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc 
+        	access="public" 
+        	author="true" 
+        	classpath="lib/gson-1.6.jar" 
+        	destdir="doc" 
+        	nodeprecated="false" 
+        	nodeprecatedlist="false" 
+        	noindex="false" 
+        	nonavbar="false" 
+        	notree="false" 
+        	packagenames="com.buscape.wrapper.result.type,
+        				com.buscape.wrapper.result" 
+        	source="1.6" 
+        	sourcefiles="src/main/java/com/buscape/wrapper/BuscapeException.java,
+        				src/main/java/com/buscape/wrapper/request/Filter.java,
+        				src/main/java/com/buscape/wrapper/request/Country.java,
+						src/main/java/com/buscape/wrapper/request/EBitMedal.java,
+        				src/main/java/com/buscape/wrapper/request/Sort.java,
+						src/main/java/com/buscape/wrapper/package-info.java,
+        				src/main/java/com/buscape/wrapper/request/package-info.java,
+        				src/main/java/com/buscape/wrapper/Buscape.java" 
+        	sourcepath="src/main/resources;src/test/java;src/main/java" 
+        	splitindex="true" 
+        	use="true" 
+        	version="true">
+            	<link href="http://java.sun.com/javase/6/docs/api/"/>
+        		<link href="http://google-gson.googlecode.com/svn/trunk/gson/docs/javadocs/"/>
+        </javadoc>
+    </target>
+</project>
