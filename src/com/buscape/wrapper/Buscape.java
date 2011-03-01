@@ -37,7 +37,7 @@ public class Buscape {
 	/**
 	 * Código do país que será utilizado na consulta
 	 */
-	private Country code = Country.BRAZIL;
+	private Country code = Country.BR;
 
 	/**
 	 * Filtros da requisição
@@ -53,6 +53,7 @@ public class Buscape {
 	public Buscape( String applicationID ) {
 		this.applicationID = applicationID;
 
+		filter = new Filter();
 		factory = new BuscapeFactory();
 	}
 

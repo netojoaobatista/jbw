@@ -142,7 +142,11 @@ public class ResultBuilder {
 		final ObjectAdapter rating = adapter.getObject( "rating" );
 
 		seller.setDigitalPayment( adapter.getBoolean( "pagamentodigital" ) );
-		seller.setEBitRating( buildEBitRating( rating.getObject( "ebitrating" ) ) );
+
+		if ( rating.has( "ebitrating" ) ) {
+			seller.setEBitRating( buildEBitRating( rating.getObject( "ebitrating" ) ) );
+		}
+
 		seller.setExtra( adapter.getString( "extra" ) );
 		seller.setThumbnail( buildThumbnail( adapter.getObject( "thumbnail" ) ) );
 		seller.setTrustedStore( adapter.getBoolean( "istrustedstore" ) );

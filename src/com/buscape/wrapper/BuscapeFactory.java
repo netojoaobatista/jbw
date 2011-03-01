@@ -47,7 +47,7 @@ public class BuscapeFactory {
 	public ObjectAdapter createObjectAdapter( String data , ResultFormat format ) throws Throwable {
 		ObjectAdapter adapter = null;
 
-		// System.out.println( data );
+		System.out.println( data );
 
 		switch ( format ) {
 			case JSON:

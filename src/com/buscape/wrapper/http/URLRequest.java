@@ -58,6 +58,8 @@ public class URLRequest implements HTTPRequest {
 	public void setURL( String spec ) throws MalformedURLException, IOException {
 		final URL url = new URL( spec );
 
+		System.out.println( spec );
+
 		conn = (HttpURLConnection) url.openConnection();
 		conn.setRequestMethod( requestMethod.toString() );
 		conn.setDoOutput( true );

@@ -1,38 +1,26 @@
 import java.util.Iterator;
 import com.buscape.wrapper.Buscape;
-import com.buscape.wrapper.request.Filter;
-import com.buscape.wrapper.request.Sort;
+import com.buscape.wrapper.exception.BuscapeException;
+import com.buscape.wrapper.request.Country;
 import com.buscape.wrapper.result.Result;
 import com.buscape.wrapper.result.type.Offer;
-import com.buscape.wrapper.result.type.Seller;
-import com.buscape.wrapper.shared.Medal;
 
 public class Using {
 	/**
 	 * @param args
 	 */
 	public static void main( String[] args ) {
-		final Buscape wrapper = new Buscape( "6a46486e764a51354753343d" );
-		final Filter filter = new Filter();
-
-		filter.setPriceMin( 800 );
-		filter.setMedal( Medal.GOLD );
-		filter.setSort( Sort.D_RATE );
-
-		wrapper.setFilter( filter );
+		final Buscape wrapper = new Buscape( "6a46486e764a51354753343d" , Country.valueOf( "BR" ) );
 
 		try {
 			final Result result = wrapper.findOfferList( "celular" );
-			final Iterator<Offer> iterator = result.getOfferIterator();
 
-			while ( iterator.hasNext() ) {
-				final Offer current = iterator.next();
-				final Seller seller = current.getSeller();
+			final Iterator<Offer> offerIterator = result.getOfferIterator();
 
-				System.out.printf( "%s - %s -> %s\n" , seller.getName() , seller.getExtra() , seller.getEBitRating().getRating() );
-				System.out.printf( "\t[R$ %7.02f] - %s - %s\n" , current.getPrice().getValue() , current.getName() , current.getThumbnail().getURL() );
+			while ( offerIterator.hasNext() ) {
+				System.out.println( offerIterator.next().getThumbnail().getURL() );
 			}
-		} catch ( final Throwable e ) {
+		} catch ( final BuscapeException e ) {
 			e.printStackTrace();
 		}
 	}

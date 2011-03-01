@@ -9,37 +9,37 @@ public enum Country {
 	/**
 	 * Argentina
 	 */
-	ARGENTINA("AR"),
+	AR( "AR" ),
 
 	/**
 	 * Brasil
 	 */
-	BRAZIL("BR"),
+	BR( "BR" ),
 
 	/**
 	 * Chile
 	 */
-	CHILE("CL"),
+	CL( "CL" ),
 
 	/**
 	 * Colômbia
 	 */
-	COLOMBIA("CO"),
+	CO( "CO" ),
 
 	/**
 	 * México
 	 */
-	MEXICO("ME"),
+	MX( "MX" ),
 
 	/**
 	 * Peru
 	 */
-	PERU("PE"),
+	PE( "PE" ),
 
 	/**
 	 * Venezuela
 	 */
-	VENEZUELA("VE");
+	VE( "VE" );
 
 	/**
 	 * Código do país

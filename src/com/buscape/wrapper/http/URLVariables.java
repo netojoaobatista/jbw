@@ -45,7 +45,7 @@ public class URLVariables implements Iterable<Entry<String , String>> {
 			return url;
 		}
 
-		return null;
+		return "";
 	}
 
 	public void unsetVariable( String key ){
